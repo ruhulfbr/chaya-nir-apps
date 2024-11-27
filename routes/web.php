@@ -25,6 +25,13 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 // Handling All Admin Routes
 Route::get('/admin/{any?}', function () {
     if (Auth::check()) {
+
+        echo "<pre>";
+        echo "Admin dashboard";
+
+        dd("Login success", Auth::check());
+        exit();
+
         return view('admin.app');
     }
 
