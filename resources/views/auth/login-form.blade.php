@@ -39,7 +39,7 @@
                                             @endif
                                             <input type="email" id="email" class="form-control" name="email"
                                                 {{-- value="{{ @old('email') }}" --}}
-                                                value="admin@finnaf.com"
+                                                value="ruhul11bd@gmail.com"
                                                 >
                                         </div>
                                     </div>
@@ -51,7 +51,7 @@
                                             @endif
                                             <input type="password" id="email" class="form-control" name="password"
                                                 {{-- value="{{ @old('password') }}" --}}
-                                                value="**finnaf**"
+                                                value="01751raj"
                                                 >
                                         </div>
                                     </div>
