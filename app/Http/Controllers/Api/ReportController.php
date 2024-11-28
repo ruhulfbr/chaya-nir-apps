@@ -15,38 +15,25 @@ class ReportController extends Controller
 {
     public function getDashBoardReports()
     {
-        $total_incomes = Deposit::sum('amount');
-        $total_expenses = Expense::sum('amount');
-        $net_incomes = $total_incomes - $total_expenses;
+        $totalDeposits = Deposit::sum('amount');
+        $totalExpenses = Expense::sum('amount');
+        $balance       = $totalDeposits - $totalExpenses;
 
-//         $currentMonthTotalincomes = Deposit::whereDate('date', '>=', Carbon::now()->firstOfMonth())
-//                                     ->whereDate('date', '<=', Carbon::now()->lastOfMonth())
-//                                     ->sum('amount');
+        $todayDeposits = Deposit::whereDate('deposit_at', '=', Carbon::now())->sum('amount');
+        $todayExpenses = Expense::whereDate('spent_at', '=', Carbon::now())->sum('amount');
 
-        $today_incomes = Deposit::whereDate('date', '=', Carbon::now())
-            ->sum('amount');
-
-        $current_month_incomes = Deposit::whereDate('date', '>=', Carbon::now()->firstOfMonth())
-            ->whereDate('date', '<=', Carbon::now()->lastOfMonth())
-            ->select([DB::raw('SUM(amount) as amount'), 'date'])
-            ->groupBy('date')->orderBy('date')
-            ->get();
-
-        $current_month_expenses = Expense::whereDate('date', '>=', Carbon::now()->firstOfMonth())
-            ->whereDate('date', '<=', Carbon::now()->lastOfMonth())
-            ->select([DB::raw('SUM(amount) as amount'), 'date'])
-            ->groupBy('date')->orderBy('date')
-            ->get();
-
-        // $memberDeposits = Member::get();
+        $memberDeposits = Deposit::selectRaw('member_id, SUM(amount) as total_amount')
+                                 ->with('member') // Load the related member
+                                 ->groupBy('member_id')
+                                 ->get();
 
         return response()->json([
-            'total_incomes' => round($total_incomes, 2),
-            'total_expenses' => round($total_expenses, 2),
-            'net_incomes' => round($net_incomes, 2),
-            'today_incomes' => round($today_incomes, 2),
-            'current_month_incomes' => $current_month_incomes,
-            'current_month_expenses' => $current_month_expenses,
+            'total_deposits'  => round($totalDeposits, 2),
+            'total_expenses'  => round($totalExpenses, 2),
+            'balance'         => round($balance, 2),
+            'today_deposits'  => round($todayDeposits, 2),
+            'today_expenses'  => round($todayExpenses, 2),
+            'member_deposits' => $memberDeposits,
         ], 200);
     }
 }

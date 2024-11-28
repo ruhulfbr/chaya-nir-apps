@@ -6,6 +6,7 @@ import settingSvgIcon from "../assets/icons/setting-svg-icon.vue";
 import { useSidebar } from "../stores/sidebar";
 import { ref } from "vue";
 const sidebarStore = useSidebar();
+const userStore = useSidebar();
 const userDropDown = ref(false);
 </script>
 
@@ -15,7 +16,7 @@ const userDropDown = ref(false);
         <ul class="navbar-nav d-flex align-items-center navbar-light ms-auto">
             <div class="top-nav-item position-relative">
                 <span @click="userDropDown = !userDropDown">
-                    <userSvgIcon width="25px" height="25px" />
+                   Ruhul Amin <userSvgIcon width="25px" height="25px" />
                 </span>
                 <div v-if="userDropDown" class="top-nav-dropdown">
                     <a class="top-nav-dropdown-item" href="/logout">
@@ -37,9 +38,6 @@ const userDropDown = ref(false);
                 </div>
             </div>
         </ul>
-        <a href="/demo" class="ms-2">
-            <span class="badge bg-danger py-2 px-3">Demo</span>
-        </a>
     </nav>
 </template>
 

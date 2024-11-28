@@ -25,16 +25,8 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 // Handling All Admin Routes
 Route::get('/admin/{any?}', function () {
     if (Auth::check()) {
-
-        echo "<pre>";
-        echo "Admin dashboard";
-
-        dd("Login success", Auth::check());
-        exit();
-
         return view('admin.app');
     }
-
     return redirect('login');
 })->where('any', '.*')->name('admin');
 
@@ -47,5 +39,5 @@ Route::group(['prefix' => 'api', 'middleware' => ['auth']], function () {
     Route::resource('deposits', DepositController::class);
     Route::resource('expenses', ExpenseController::class);
 
-    Route::get('/api/dashboard-reports', [ReportController::class, 'getDashBoardReports']);
+    Route::get('/dashboard-reports', [ReportController::class, 'getDashBoardReports']);
 });

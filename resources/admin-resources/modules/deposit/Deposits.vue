@@ -3,89 +3,89 @@ import { computed, onMounted, ref } from "vue";
 import Loader from "../../components/shared/loader/Loader.vue";
 import Pagination from "../../components/shared/pagination/Pagination.vue";
 import { useConfirmStore } from "../../components/shared/confirm-alert/confirmStore.js";
-import { useIncomeStore } from "./incomeStore";
-import { useIncomeCategoryStore } from "../income-category/incomeCategoryStore";
+import { useDepositStore } from "./depositStore.js";
+import { useMemberStore } from "../members/memberStore.js";
 import BinSvgIcon from "../../assets/icons/bin-svg-icon.vue";
 import EditSvgIcon from "../../assets/icons/edit-svg-icon.vue";
 import ViewSvgIcon from "../../assets/icons/view-svg-icon.vue";
 import AddNewButton from "../../components/buttons/AddNewButton.vue";
 import FilterButton from "../../components/buttons/FilterButton.vue";
 import BulkDeleteButton from "../../components/buttons/BulkDeleteButton.vue";
-import AddIncome from "./AddIncome.vue";
-import EditIncome from "./EditIncome.vue";
-import ViewIncome from "./ViewIncome.vue";
+import addDeposit from "./AddDeposit.vue";
+import editDeposit from "./EditDeposit.vue";
+import ViewDeposit from "./ViewDeposit.vue";
 
 const loading = ref(false);
 const filterTab = ref(true);
-const showAddIncome = ref(false);
-const showEditIncome = ref(false);
-const showViewIncome = ref(false);
+const showAddDeposit = ref(false);
+const showEditDeposit = ref(false);
+const showViewDeposit = ref(false);
 
-const incomeStore = useIncomeStore();
+const depositStore = useDepositStore();
 const confirmStore = useConfirmStore();
-const incomes = computed(() => incomeStore.incomes);
-const incomeCategoryStore = useIncomeCategoryStore();
-const incomeCategories = ref([]);
-const q_title = ref("");
-const selected_incomes = ref([]);
-const all_selectd = ref(false);
+const memberStore = useMemberStore()
+const deposits = computed(() => depositStore.deposits);
+const members = ref([]);
+const q_search = ref("");
+const selected_deposits = ref([]);
+const all_selected = ref(false);
 
 function select_all() {
-    if (all_selectd.value == false) {
-        selected_incomes.value = [];
-        incomeStore.incomes.forEach((element) => {
-            selected_incomes.value.push(element.id);
+    if (all_selected.value === false) {
+        selected_deposits.value = [];
+        depositStore.deposits.forEach((element) => {
+            selected_deposits.value.push(element.id);
         });
-        all_selectd.value = true;
+        all_selected.value = true;
     } else {
-        all_selectd.value = false;
-        selected_incomes.value = [];
+        all_selected.value = false;
+        selected_deposits.value = [];
     }
 }
 
 async function deleteData(id) {
     confirmStore
-        .show_box({ message: "Do you want to delete selected income?" })
+        .show_box({ message: "Do you want to delete selected deposit?" })
         .then(async () => {
-            if (confirmStore.do_action == true) {
-                incomeStore.deleteIncome(id).then(() => {
-                    incomeStore.fetchIncomes(
-                        incomeStore.current_page,
-                        incomeStore.limit,
-                        incomeStore.q_title
+            if (confirmStore.do_action === true) {
+                depositStore.deleteDeposit(id).then(() => {
+                    depositStore.fetchDeposits(
+                        depositStore.current_page,
+                        depositStore.limit,
+                        depositStore.q_title
                     );
 
                     if (Array.isArray(id)) {
-                        all_selectd.value = false;
-                        selected_incomes.value = [];
+                        all_selected.value = false;
+                        selected_deposits.value = [];
                     }
                 });
             }
         });
 }
 
-function openEditIncomeModal(id) {
-    incomeStore.edit_income_id = id;
-    showEditIncome.value = true;
+function openEditDepositModal(id) {
+    depositStore.edit_deposit_id = id;
+    showEditDeposit.value = true;
 }
 
-function openViewIncomeModal(id) {
-    incomeStore.view_income_id = id;
-    showViewIncome.value = true;
+function openViewDepositModal(id) {
+    depositStore.view_deposit_id = id;
+    showViewDeposit.value = true;
 }
 
 async function fetchData(
-    page = incomeStore.current_page,
-    limit = incomeStore.limit,
-    q_title = incomeStore.q_title
+    page = depositStore.current_page,
+    limit = depositStore.limit,
+    q_search = depositStore.q_search
 ) {
     loading.value = true;
 
-    all_selectd.value = false;
-    selected_incomes.value = [];
+    all_selected.value = false;
+    selected_deposits.value = [];
 
     try {
-        incomeStore.fetchIncomes(page, limit, q_title).then((response) => {
+        depositStore.fetchDeposits(page, limit, q_search).then((response) => {
             loading.value = false;
         });
     } catch (error) {
@@ -95,9 +95,9 @@ async function fetchData(
 }
 
 onMounted(async () => {
-    fetchData(1);
-    incomeCategoryStore.fetchCatList().then((response) => {
-        incomeCategories.value = response;
+    await fetchData(1);
+    memberStore.fetchMemberList().then((response) => {
+        members.value = response;
     });
 });
 </script>
@@ -105,13 +105,13 @@ onMounted(async () => {
 <template>
     <div>
         <div class="page-top-box mb-2 d-flex flex-wrap">
-            <h3 class="h3">Income List</h3>
+            <h3 class="h3">Deposit List</h3>
             <div class="page-heading-actions ms-auto">
                 <BulkDeleteButton
-                    v-if="selected_incomes.length > 0"
-                    @click="deleteData(selected_incomes)"
+                    v-if="selected_deposits.length > 0"
+                    @click="deleteData(selected_deposits)"
                 />
-                <AddNewButton @click="showAddIncome = true" />
+                <AddNewButton @click="showAddDeposit = true" />
                 <FilterButton @click="filterTab = !filterTab" />
             </div>
         </div>
@@ -122,23 +122,23 @@ onMounted(async () => {
                         type="text"
                         class="form-control"
                         placeholder="type name.."
-                        v-model="q_title"
-                        @keyup="fetchData(1, incomeStore.limit, q_title)"
+                        v-model="q_search"
+                        @keyup="fetchData(1, depositStore.limit, q_search)"
                     />
                 </div>
                 <div class="col-md-3 col-sm-6 my-1">
                     <select
                         class="form-select"
-                        v-model="incomeStore.q_category"
+                        v-model="depositStore.q_member"
                         @change="fetchData(1)"
                     >
-                        <option value="">select category</option>
+                        <option value="">select member</option>
                         <option
-                            :key="incomeCategory.value"
-                            :value="incomeCategory.value"
-                            v-for="incomeCategory in incomeCategories"
+                            :key="member.id"
+                            :value="member.id"
+                            v-for="member in members"
                         >
-                            {{ incomeCategory.label }}
+                            {{ member.name }}
                         </option>
                     </select>
                 </div>
@@ -149,7 +149,7 @@ onMounted(async () => {
                             type="date"
                             class="form-control"
                             @change="fetchData(1)"
-                            v-model="incomeStore.q_start_date"
+                            v-model="depositStore.q_start_date"
                         />
                     </div>
                 </div>
@@ -160,42 +160,32 @@ onMounted(async () => {
                             type="date"
                             class="form-control"
                             @change="fetchData(1)"
-                            v-model="incomeStore.q_end_date"
+                            v-model="depositStore.q_end_date"
                         />
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 my-1">
                     <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text">Min Amount</span>
+                        <span class="input-group-text">Amount</span>
                         <input
                             type="number"
                             class="form-control"
                             @input="fetchData(1)"
-                            v-model="incomeStore.q_start_amount"
+                            v-model="depositStore.q_amount"
                         />
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6 my-1">
-                    <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text">Max Amount</span>
-                        <input
-                            type="number"
-                            class="form-control"
-                            @input="fetchData(1)"
-                            v-model="incomeStore.q_end_amount"
-                        />
-                    </div>
-                </div>
+
                 <div class="col-md-3 col-sm-6 my-1">
                     <div class="input-group input-group-sm mb-3">
                         <span class="input-group-text">Sort By</span>
                         <select
                             class="form-select"
-                            v-model="incomeStore.q_sort_column"
+                            v-model="depositStore.q_sort_column"
                             @change="fetchData(1)"
                         >
                             <option value="id">Default</option>
-                            <option value="date">Date</option>
+                            <option value="deposit_at">Deposit Date</option>
                             <option value="amount">Amount</option>
                         </select>
                     </div>
@@ -205,7 +195,7 @@ onMounted(async () => {
                         <span class="input-group-text">order</span>
                         <select
                             class="form-select"
-                            v-model="incomeStore.q_sort_order"
+                            v-model="depositStore.q_sort_order"
                             @change="fetchData(1)"
                         >
                             <option value="desc">desc</option>
@@ -219,7 +209,7 @@ onMounted(async () => {
         <Loader v-if="loading" />
         <div
             class="table-responsive bg-white shadow-sm"
-            v-if="loading == false"
+            v-if="loading === false"
         >
             <table class="table mb-0 table-hover">
                 <thead class="thead-dark">
@@ -229,7 +219,7 @@ onMounted(async () => {
                                 type="checkbox"
                                 class="form-check-input"
                                 @click="select_all"
-                                v-model="all_selectd"
+                                v-model="all_selected"
                             />
                         </th>
                         <th>Title</th>
@@ -240,39 +230,31 @@ onMounted(async () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="income in incomes" :key="income.id">
+                    <tr v-for="deposit in deposits" :key="deposit.id">
                         <td>
                             <input
                                 type="checkbox"
                                 class="form-check-input"
-                                v-model="selected_incomes"
-                                :value="income.id"
+                                v-model="selected_deposits"
+                                :value="deposit.id"
                             />
                         </td>
-                        <td class="min150 max150">{{ income.title }}</td>
-                        <td class="min100 max100">{{ income.amount }}</td>
-                        <td class="min200 max200">
-                            <span
-                                :key="income_cat.value"
-                                v-for="income_cat in income.categories"
-                                class="badge bg-primary m-1 px-2 shadow-sm py-1"
-                            >
-                                {{ income_cat.label }}
-                            </span>
-                        </td>
-                        <td class="min100 max100">{{ income.date }}</td>
+                        <td class="min150 max150">{{ deposit.member.name }}</td>
+                        <td class="min100 max100">{{ deposit.amount }}</td>
+
+                        <td class="min100 max100">{{ deposit.deposit_at }}</td>
                         <td class="table-action-btns">
                             <ViewSvgIcon
                                 color="#00CFDD"
-                                @click="openViewIncomeModal(income.id)"
+                                @click="openViewDepositModal(deposit.id)"
                             />
                             <EditSvgIcon
                                 color="#739EF1"
-                                @click="openEditIncomeModal(income.id)"
+                                @click="openEditDepositModal(deposit.id)"
                             />
                             <BinSvgIcon
                                 color="#FF7474"
-                                @click="deleteData(income.id)"
+                                @click="deleteData(deposit.id)"
                             />
                         </td>
                     </tr>
@@ -280,33 +262,33 @@ onMounted(async () => {
             </table>
         </div>
         <Pagination
-            v-if="loading == false && incomes.length > 0"
-            :total_pages="incomeStore.total_pages"
-            :current_page="incomeStore.current_page"
-            :per_page="incomeStore.limit"
+            v-if="loading === false && deposits.length > 0"
+            :total_pages="depositStore.total_pages"
+            :current_page="depositStore.current_page"
+            :per_page="depositStore.limit"
             @pageChange="
-                (currentPage) => fetchData(currentPage, incomeStore.limit)
+                (currentPage) => fetchData(currentPage, depositStore.limit)
             "
-            @perPageChange="(perpage) => fetchData(1, perpage)"
+            @perPageChange="(perPage) => fetchData(1, perPage)"
         />
         <div class="modals-container">
-            <AddIncome
-                v-if="showAddIncome"
-                :categories="incomeCategories"
-                @close="showAddIncome = false"
+            <addDeposit
+                v-if="showAddDeposit"
+                :members="members"
+                @close="showAddDeposit = false"
                 @refreshData="fetchData(1)"
             />
-            <EditIncome
-                v-if="showEditIncome"
-                :income_id="incomeStore.edit_income_id"
-                :categories="incomeCategories"
-                @close="showEditIncome = false"
-                @refreshData="fetchData(incomeStore.current_page)"
+            <editDeposit
+                v-if="showEditDeposit"
+                :deposit_id="depositStore.edit_deposit_id"
+                :members="members"
+                @close="showEditDeposit = false"
+                @refreshData="fetchData(depositStore.current_page)"
             />
-            <ViewIncome
-                v-if="showViewIncome"
-                :income_id="incomeStore.view_income_id"
-                @close="showViewIncome = false"
+            <ViewDeposit
+                v-if="showViewDeposit"
+                :deposit_id="depositStore.view_deposit_id"
+                @close="showViewDeposit = false"
             />
         </div>
     </div>

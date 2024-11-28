@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Member extends Model
 {
@@ -13,8 +14,13 @@ class Member extends Model
      */
     protected $fillable = [
         'name',
-        'phone_number',
+        'phone',
         'photo',
         'status',
     ];
+
+    public function deposits(): HasMany
+    {
+        return $this->hasMany(Deposit::class);
+    }
 }

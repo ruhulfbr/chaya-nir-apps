@@ -25,7 +25,6 @@ function pageChange(perpage) {
                 @change="pageChange(item_per_page)"
                 class="form-select form-select-sm text-uppercase"
             >
-                <option value="5">5 per page</option>
                 <option value="10">10 per page</option>
                 <option value="20">20 per page</option>
                 <option value="30">30 per page</option>
@@ -42,7 +41,7 @@ function pageChange(perpage) {
             <li
                 @click="$emit('pageChange', parseInt(current_page) - 1)"
                 class="page-item us-none cursor-pointer"
-                :class="current_page == 1 ? 'd-none' : ''"
+                :class="current_page === 1 ? 'd-none' : ''"
             >
                 <span class="page-link"> Prev</span>
             </li>
@@ -52,9 +51,9 @@ function pageChange(perpage) {
                 @click="$emit('pageChange', 1)"
                 class="page-item us-none cursor-pointer"
                 :class="
-                    current_page == 1 ||
-                    parseInt(current_page) - 1 == 1 ||
-                    parseInt(current_page) - 2 == 1
+                    current_page === 1 ||
+                    parseInt(current_page) - 1 === 1 ||
+                    parseInt(current_page) - 2 === 1
                         ? 'd-none'
                         : ''
                 "
@@ -70,7 +69,7 @@ function pageChange(perpage) {
                 @click="$emit('pageChange', parseInt(current_page) - 2)"
                 class="page-item us-none cursor-pointer"
                 :class="
-                    current_page == 1 || parseInt(current_page) - 1 == 1
+                    current_page === 1 || parseInt(current_page) - 1 === 1
                         ? 'd-none'
                         : ''
                 "
@@ -82,7 +81,7 @@ function pageChange(perpage) {
             <li
                 @click="$emit('pageChange', parseInt(current_page) - 1)"
                 class="page-item us-none cursor-pointer"
-                :class="current_page == 1 ? 'd-none' : ''"
+                :class="current_page === 1 ? 'd-none' : ''"
             >
                 <span class="page-link"> {{ current_page - 1 }} </span>
             </li>
@@ -96,7 +95,7 @@ function pageChange(perpage) {
             <li
                 @click="$emit('pageChange', parseInt(current_page) + 1)"
                 class="page-item us-none cursor-pointer"
-                :class="current_page == total_pages ? 'd-none' : ''"
+                :class="current_page === total_pages ? 'd-none' : ''"
             >
                 <span class="page-link"> {{ parseInt(current_page) + 1 }}</span>
             </li>
@@ -106,8 +105,8 @@ function pageChange(perpage) {
                 @click="$emit('pageChange', parseInt(current_page) + 2)"
                 class="page-item us-none cursor-pointer"
                 :class="
-                    parseInt(current_page) == total_pages ||
-                    parseInt(current_page) + 1 == total_pages
+                    parseInt(current_page) === total_pages ||
+                    parseInt(current_page) + 1 === total_pages
                         ? 'd-none'
                         : ''
                 "
@@ -124,9 +123,9 @@ function pageChange(perpage) {
                 @click="$emit('pageChange', parseInt(total_pages))"
                 class="page-item us-none cursor-pointer"
                 :class="
-                    current_page == total_pages ||
-                    parseInt(current_page) + 1 == total_pages ||
-                    parseInt(current_page) + 2 == total_pages
+                    current_page === total_pages ||
+                    parseInt(current_page) + 1 === total_pages ||
+                    parseInt(current_page) + 2 === total_pages
                         ? 'd-none'
                         : ''
                 "
@@ -138,7 +137,7 @@ function pageChange(perpage) {
             <li
                 @click="$emit('pageChange', parseInt(current_page) + 1)"
                 class="page-item us-none cursor-pointer"
-                :class="current_page == total_pages ? 'd-none' : ''"
+                :class="current_page === total_pages ? 'd-none' : ''"
             >
                 <span class="page-link"> next </span>
             </li>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Member;
 
-use App\Rules\CombineUnique;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,22 +14,10 @@ class UpdateMemberRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('id');
-
         return [
-            'name' => [
-                'string', 'required',
-                new CombineUnique(
-                    [
-                        'name' => $this->name,
-                        'category_type' => 'expense',
-                    ],
-                    'categories',
-                    'category must be unique',
-                    $id
-                ),
-            ],
-
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'numeric', 'digits_between:7,15'],
+            'photo' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

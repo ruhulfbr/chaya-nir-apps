@@ -3,82 +3,100 @@ import formatValidationErrors from "../../utils/format-validation-errors";
 import { defineStore } from "pinia";
 import { useNotificationStore } from "../../components/shared/notification/notificationStore";
 
-export const useIncomeCategoryStore = defineStore("income_category", {
+export const useDepositStore = defineStore("deposit", {
     state: () => ({
         current_page: 1,
         total_pages: 0,
-        limit: 10,
+        limit: 20,
 
-        q_name: "",
+        q_search: "",
+        q_member: "",
+        q_amount: "",
+        q_start_date: "",
+        q_end_date: "",
+        q_sort_column: "id",
+        q_sort_order: "desc",
 
-        income_categories: [],
+        deposits: [],
 
-        edit_income_category_id: null,
-        view_income_category_id: null,
+        edit_deposit_id: null,
+        view_deposit_id: null,
 
-        add_income_category_errors: {},
+        add_deposit_errors: {},
 
-        edit_income_category_errors: {},
+        edit_deposit_errors: {},
 
-        current_income_category_item: {
+        current_deposit_item: {
             id: "",
-            name: "",
+            member_id: "",
+            received_by: "",
+            amount: "",
+            deposit_at: "",
+            comment: "",
+            slip: "",
+            method: ""
         },
     }),
 
     getters: {},
 
     actions: {
-        resetCurrentIncomeCatData() {
-            this.current_income_category_item = {
+        resetCurrentDepositData() {
+            this.current_deposit_item = {
                 id: "",
-                name: "",
+                member_id: "",
+                received_by: "",
+                amount: "",
+                deposit_at: "",
+                comment: "",
+                slip: "",
+                method: ""
             };
-            this.add_income_category_errors = [];
-            this.edit_income_category_errors = [];
+            this.add_deposit_errors = [];
+            this.edit_deposit_errors = [];
         },
 
-        fetchCatList() {
-            return new Promise((resolve, reject) => {
-                axios
-                    .get(`/api/income-categories/list`)
-                    .then((response) => {
-                        resolve(response.data.data);
-                    })
-                    .catch((errors) => {
-                        reject(errors);
-                    });
-            });
-        },
+        fetchDeposits(page, limit, q_search = "") {
+            const params = {
+                page,
+                limit,
+                search: this.q_search,
+                member_id: this.q_member,
+                amount: this.q_amount,
+                start_date: this.q_start_date,
+                end_date: this.q_end_date,
+                sort_column: this.q_sort_column,
+                sort_order: this.q_sort_order,
+            };
 
-        fetchIncomeCats(page, limit, q_name = "") {
             return new Promise((resolve, reject) => {
                 axios
-                    .get(
-                        `/api/income-categories?page=${page}&limit=${limit}&name=${q_name}`
-                    )
+                    .get("/api/deposits", { params })
                     .then((response) => {
-                        this.income_categories = response.data.data;
+                        this.deposits = response.data.data;
                         if (response.data.meta) {
                             this.total_pages = response.data.meta.last_page;
                             this.current_page = response.data.meta.current_page;
                             this.limit = response.data.meta.per_page;
-                            this.q_name = q_name;
+                            this.q_search = q_search;
                         }
-                        resolve(this.income_categories);
+                        resolve(this.deposits);
                     })
                     .catch((errors) => {
+
+                        console.log(errors)
+
                         reject(errors);
                     });
             });
         },
-
-        async fetchIncomeCat(id) {
+        async fetchDeposit(id) {
             return new Promise((resolve, reject) => {
                 axios
-                    .get(`/api/income-categories/${id}`)
+                    .get(`/api/deposits/${id}`)
                     .then((response) => {
-                        this.current_income_category_item = response.data.data;
+                        this.current_deposit_item = response.data.data;
+
                         resolve(response.data.data);
                     })
                     .catch((errors) => {
@@ -87,15 +105,15 @@ export const useIncomeCategoryStore = defineStore("income_category", {
             });
         },
 
-        async addIncomeCat(data) {
+        async addDeposit(data) {
             return new Promise((resolve, reject) => {
                 axios
-                    .post(`/api/income-categories`, data)
+                    .post(`/api/deposits`, data)
                     .then((response) => {
-                        this.resetCurrentIncomeCatData();
+                        this.resetCurrentDepositData();
                         const notifcationStore = useNotificationStore();
                         notifcationStore.pushNotification({
-                            message: "IncomeCat Added Successfully",
+                            message: "Deposit Added Successfully",
                             type: "success",
                             time: 2000,
                         });
@@ -110,29 +128,25 @@ export const useIncomeCategoryStore = defineStore("income_category", {
                             time: 2000,
                         });
 
-                        if (error.response.status == 422) {
-                            this.add_income_category_errors =
-                                formatValidationErrors(
-                                    error.response.data.errors
-                                );
+                        if (error.response.status === 422) {
+                            this.add_deposit_errors = formatValidationErrors(
+                                error.response.data.errors
+                            );
                         }
                         reject(error);
                     });
             });
         },
 
-        async editIncomeCat(data) {
+        async editDeposit(data) {
             return new Promise((resolve, reject) => {
                 axios
-                    .put(
-                        `/api/income-categories/${this.edit_income_category_id}`,
-                        data
-                    )
+                    .put(`/api/deposits/${this.edit_deposit_id}`, data)
                     .then((response) => {
-                        this.resetCurrentIncomeCatData();
+                        this.resetCurrentDepositData();
                         const notifcationStore = useNotificationStore();
                         notifcationStore.pushNotification({
-                            message: "income category updated successfully",
+                            message: "Deposit record updated successfully",
                             type: "success",
                         });
                         resolve(response);
@@ -145,57 +159,43 @@ export const useIncomeCategoryStore = defineStore("income_category", {
                             type: "error",
                         });
 
-                        if (errors.response.status == 422) {
-                            this.edit_income_category_errors =
-                                formatValidationErrors(
-                                    errors.response.data.errors
-                                );
+                        if (errors.response.status === 422) {
+                            this.edit_deposit_errors = formatValidationErrors(
+                                errors.response.data.errors
+                            );
                         }
                         reject(errors);
                     });
             });
         },
 
-        async deleteIncomeCat(id) {
+        async deleteDeposit(id) {
             return new Promise((resolve, reject) => {
                 axios
-                    .delete(`/api/income-categories/${id}`)
+                    .delete(`/api/deposits/${id}`)
                     .then((response) => {
                         if (
-                            this.income_categories.length == 1 ||
+                            this.deposits.length === 1 ||
                             (Array.isArray(id) &&
-                                id.length == this.income_categories.length)
+                                id.length === this.deposits.length)
                         ) {
-                            this.current_page == 1
+                            this.current_page === 1
                                 ? (this.current_page = 1)
                                 : (this.current_page -= 1);
                         }
 
-                        this.resetCurrentIncomeCatData();
+                        this.resetCurrentDepositData();
                         const notifcationStore = useNotificationStore();
                         notifcationStore.pushNotification({
-                            message: "income category deleted successfully",
+                            message: "Deposit deleted successfully",
                             type: "success",
                             time: 2000,
                         });
 
                         resolve(response);
                     })
-                    .catch((errors) => {
-                        if (
-                            errors.response.data.error_type &&
-                            errors.response.data.error_type == "HAS_CHILD_ERROR"
-                        ) {
-                            const notifcationStore = useNotificationStore();
-                            notifcationStore.pushNotification({
-                                message:
-                                    "Category is associated with non zero income records. Delete that incomes first.",
-                                type: "error",
-                                time: 5000,
-                            });
-                        }
-
-                        reject(errors);
+                    .catch((error) => {
+                        reject(error);
                     });
             });
         },

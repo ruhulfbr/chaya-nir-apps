@@ -2,23 +2,23 @@
 import { ref, computed, onMounted } from "vue";
 import CrossSvgIcon from "../../assets/icons/cross-svg-icon.vue";
 import Loader from "../../components/shared/loader/Loader.vue";
-import { useIncomeStore } from "./incomeStore";
+import { useDepositStore } from "./depositStore.js";
 
 const props = defineProps(["income_id"]);
 const emit = defineEmits(["close", "refreshData"]);
 
 const loading = ref(false);
-const incomeStore = useIncomeStore();
-const income_data = computed(() => incomeStore.current_income_item);
+const depositStore = useDepositStore();
+const deposit_data = computed(() => depositStore.current_deposit_item);
 
 async function fetchData(id) {
     loading.value = true;
-    await incomeStore.fetchIncome(id);
+    await depositStore.fetchDeposit(id);
     loading.value = false;
 }
 
 async function closeViewIncomeModal() {
-    incomeStore.resetCurrentIncomeData();
+    depositStore.resetCurrentDepositData();
     emit("close");
 }
 
@@ -49,7 +49,7 @@ onMounted(async () => {
                                     disabled
                                     type="text"
                                     class="form-control"
-                                    v-model="income_data.title"
+                                    v-model="deposit_data.title"
                                 />
                             </div>
                             <div class="form-item">
@@ -57,7 +57,7 @@ onMounted(async () => {
                                 <div>
                                     <span
                                         :key="income_cat.value"
-                                        v-for="income_cat in income_data.categories_details"
+                                        v-for="income_cat in deposit_data.categories_details"
                                         class="badge bg-primary m-1 px-2 shadow-sm py-2 rounded-2"
                                     >
                                         {{ income_cat.label }}
@@ -71,7 +71,7 @@ onMounted(async () => {
                                     disabled
                                     type="date"
                                     class="form-control"
-                                    v-model="income_data.date"
+                                    v-model="deposit_data.date"
                                 />
                             </div>
                             <div class="form-item">
@@ -81,14 +81,14 @@ onMounted(async () => {
                                     disabled
                                     type="number"
                                     class="form-control"
-                                    v-model="income_data.amount"
+                                    v-model="deposit_data.amount"
                                 />
                             </div>
                             <div class="form-item">
                                 <label class="my-2">Description: </label>
                                 <textarea
                                     disabled
-                                    v-model="income_data.description"
+                                    v-model="deposit_data.description"
                                     class="form-control"
                                     rows="5"
                                 ></textarea>

@@ -1,18 +1,18 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import CrossSvgIcon from "../../assets/icons/cross-svg-icon.vue";
-import { useIncomeStore } from "./incomeStore";
+import { useDepositStore } from "./depositStore.js";
 import Multiselect from "@vueform/multiselect";
 
 const emit = defineEmits(["close", "refreshData"]);
 const props = defineProps(["categories"]);
 
-const incomeStore = useIncomeStore();
-const income_data = computed(() => incomeStore.current_income_item);
+const depositStore = useDepositStore();
+const deposit_data = computed(() => depositStore.current_deposit_item);
 
 async function submitData() {
-    incomeStore
-        .addIncome(JSON.parse(JSON.stringify(incomeStore.current_income_item)))
+    depositStore
+        .addDeposit(JSON.parse(JSON.stringify(depositStore.current_deposit_item)))
         .then(() => {
             emit("refreshData");
             emit("close");
@@ -22,13 +22,13 @@ async function submitData() {
         });
 }
 
-async function closeAddIncomeModal() {
-    incomeStore.resetCurrentIncomeData();
+async function closeAddDepositModal() {
+    depositStore.resetCurrentDepositData();
     emit("close");
 }
 
 onMounted(() => {
-    incomeStore.resetCurrentIncomeData();
+    depositStore.resetCurrentDepositData();
 });
 </script>
 
@@ -37,9 +37,9 @@ onMounted(() => {
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add New Income</h5>
+                    <h5 class="modal-title">Add New Deposit</h5>
                     <button type="button" class="close">
-                        <CrossSvgIcon @click="closeAddIncomeModal" />
+                        <CrossSvgIcon @click="closeAddDepositModal" />
                     </button>
                 </div>
 
@@ -47,32 +47,32 @@ onMounted(() => {
                     <form action="">
                         <div class="form-item">
                             <label class="my-2">Income Short Title</label>
-                            <p
-                                class="text-danger"
-                                v-if="incomeStore.add_income_errors.title"
-                            >
-                                {{ incomeStore.add_income_errors.title }}
-                            </p>
                             <input
                                 type="text"
                                 class="form-control"
-                                v-model="income_data.title"
+                                v-model="deposit_data.title"
                             />
+                            <span
+                                class="text-danger"
+                                v-if="depositStore.add_deposit_errors.title"
+                            >
+                                {{ depositStore.add_deposit_errors.title }}
+                            </span>
                         </div>
                         <div class="form-item">
                             <label class="my-2">Income Category</label>
                             <p
                                 class="text-danger"
-                                v-if="incomeStore.add_income_errors.categories"
+                                v-if="depositStore.add_deposit_errors.categories"
                             >
-                                {{ incomeStore.add_income_errors.categories }}
+                                {{ depositStore.add_deposit_errors.categories }}
                             </p>
 
                             <Multiselect
                                 :searchable="true"
                                 mode="tags"
                                 :hide-selected="false"
-                                v-model="income_data.categories"
+                                v-model="deposit_data.categories"
                                 :options="categories"
                             ></Multiselect>
                         </div>
@@ -80,34 +80,34 @@ onMounted(() => {
                             <label class="my-2">Income Date</label>
                             <p
                                 class="text-danger"
-                                v-if="incomeStore.add_income_errors.date"
+                                v-if="depositStore.add_deposit_errors.date"
                             >
-                                {{ incomeStore.add_income_errors.date }}
+                                {{ depositStore.add_deposit_errors.date }}
                             </p>
                             <input
                                 type="date"
                                 class="form-control"
-                                v-model="income_data.date"
+                                v-model="deposit_data.date"
                             />
                         </div>
                         <div class="form-item">
                             <label class="my-2">Income Amount</label>
                             <p
                                 class="text-danger"
-                                v-if="incomeStore.add_income_errors.amount"
+                                v-if="depositStore.add_deposit_errors.amount"
                             >
-                                {{ incomeStore.add_income_errors.amount }}
+                                {{ depositStore.add_deposit_errors.amount }}
                             </p>
                             <input
                                 type="number"
                                 class="form-control"
-                                v-model="income_data.amount"
+                                v-model="deposit_data.amount"
                             />
                         </div>
                         <div class="form-item">
                             <label class="my-2">Description</label>
                             <textarea
-                                v-model="income_data.description"
+                                v-model="deposit_data.description"
                                 class="form-control"
                                 rows="5"
                             ></textarea>
@@ -118,7 +118,7 @@ onMounted(() => {
                 <div class="modal-footer">
                     <button
                         class="btn btn-danger btn-sm"
-                        @click="closeAddIncomeModal"
+                        @click="closeAddDepositModal"
                     >
                         Cancel
                     </button>

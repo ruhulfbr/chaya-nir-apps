@@ -2,19 +2,19 @@
 import { ref, computed, onMounted } from "vue";
 import CrossSvgIcon from "../../assets/icons/cross-svg-icon.vue";
 import Loader from "../../components/shared/loader/Loader.vue";
-import { useIncomeStore } from "./incomeStore";
+import { useDepositStore } from "./depositStore.js";
 import Multiselect from "@vueform/multiselect";
 
 const props = defineProps(["income_id", "categories"]);
 const emit = defineEmits(["close", "refreshData"]);
 
 const loading = ref(false);
-const incomeStore = useIncomeStore();
-const income_data = computed(() => incomeStore.current_income_item);
+const depositStore = useDepositStore();
+const deposit_data = computed(() => depositStore.current_deposit_item);
 
 async function submitData() {
-    incomeStore
-        .editIncome(JSON.parse(JSON.stringify(incomeStore.current_income_item)))
+    depositStore
+        .editDeposit(JSON.parse(JSON.stringify(depositStore.current_deposit_item)))
         .then(() => {
             emit("refreshData");
             emit("close");
@@ -26,12 +26,12 @@ async function submitData() {
 
 async function fetchData(id) {
     loading.value = true;
-    await incomeStore.fetchIncome(id);
+    await depositStore.fetchDeposit(id);
     loading.value = false;
 }
 
-async function closeEditIncomeModal() {
-    incomeStore.resetCurrentIncomeData();
+async function closeeditDepositModal() {
+    depositStore.resetCurrentDepositData();
     emit("close");
 }
 
@@ -47,7 +47,7 @@ onMounted(async () => {
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Income</h5>
                     <button type="button" class="close">
-                        <CrossSvgIcon @click="closeEditIncomeModal" />
+                        <CrossSvgIcon @click="closeeditDepositModal" />
                     </button>
                 </div>
 
@@ -59,14 +59,14 @@ onMounted(async () => {
                                 <label class="my-2">Income Short Title</label>
                                 <p
                                     class="text-danger"
-                                    v-if="incomeStore.edit_income_errors.title"
+                                    v-if="depositStore.edit_deposit_errors.title"
                                 >
-                                    {{ incomeStore.edit_income_errors.title }}
+                                    {{ depositStore.edit_deposit_errors.title }}
                                 </p>
                                 <input
                                     type="text"
                                     class="form-control"
-                                    v-model="income_data.title"
+                                    v-model="deposit_data.title"
                                 />
                             </div>
                             <div class="form-item">
@@ -74,12 +74,12 @@ onMounted(async () => {
                                 <p
                                     class="text-danger"
                                     v-if="
-                                        incomeStore.edit_income_errors
+                                        depositStore.edit_deposit_errors
                                             .categories
                                     "
                                 >
                                     {{
-                                        incomeStore.edit_income_errors
+                                        depositStore.edit_deposit_errors
                                             .categories
                                     }}
                                 </p>
@@ -87,7 +87,7 @@ onMounted(async () => {
                                     :searchable="true"
                                     mode="tags"
                                     :hide-selected="false"
-                                    v-model="income_data.categories"
+                                    v-model="deposit_data.categories"
                                     :options="categories"
                                 ></Multiselect>
                             </div>
@@ -95,34 +95,34 @@ onMounted(async () => {
                                 <label class="my-2">Income Date</label>
                                 <p
                                     class="text-danger"
-                                    v-if="incomeStore.edit_income_errors.date"
+                                    v-if="depositStore.edit_deposit_errors.date"
                                 >
-                                    {{ incomeStore.edit_income_errors.date }}
+                                    {{ depositStore.edit_deposit_errors.date }}
                                 </p>
                                 <input
                                     type="date"
                                     class="form-control"
-                                    v-model="income_data.date"
+                                    v-model="deposit_data.date"
                                 />
                             </div>
                             <div class="form-item">
                                 <label class="my-2">Income Amount</label>
                                 <p
                                     class="text-danger"
-                                    v-if="incomeStore.edit_income_errors.amount"
+                                    v-if="depositStore.edit_deposit_errors.amount"
                                 >
-                                    {{ incomeStore.edit_income_errors.amount }}
+                                    {{ depositStore.edit_deposit_errors.amount }}
                                 </p>
                                 <input
                                     type="number"
                                     class="form-control"
-                                    v-model="income_data.amount"
+                                    v-model="deposit_data.amount"
                                 />
                             </div>
                             <div class="form-item">
                                 <label class="my-2">Description</label>
                                 <textarea
-                                    v-model="income_data.description"
+                                    v-model="deposit_data.description"
                                     class="form-control"
                                     rows="5"
                                 ></textarea>
@@ -134,7 +134,7 @@ onMounted(async () => {
                 <div class="modal-footer">
                     <button
                         class="btn btn-danger btn-sm"
-                        @click="closeEditIncomeModal"
+                        @click="closeeditDepositModal"
                     >
                         Cancel
                     </button>

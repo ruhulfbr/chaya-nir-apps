@@ -16,23 +16,23 @@ class MemberController extends Controller
     {
         $limit       = $request->query('limit') && $request->query('limit') < 100 ? $request->query('limit') : 10;
         $name        = $request->query('name');
-        $phoneNumber = $request->query('phone_number');
+        $phoneNumber = $request->query('phone');
 
         $member = Member::query();
         $member->when($name, function ($query, $name) {
             $query->where('name', 'LIKE', '%' . $name . '%');
         });
         $member->when($phoneNumber, function ($query, $phoneNumber) {
-            $query->where('phone_number', $phoneNumber);
+            $query->where('phone', 'LIKE', '%' . $phoneNumber . '%');
         });
-        $member = $member->where('category_type', 'income')->paginate($limit);
+        $member = $member->withSum('deposits', 'amount')->paginate($limit);
 
         return MemberResource::collection($member);
     }
 
     public function show($id)
     {
-        $member = Member::where('id', $id)->firstOrFail();
+        $member = Member::where('id', $id)->withSum('deposits', 'amount')->firstOrFail();
 
         return new MemberResource($member);
     }
@@ -75,7 +75,7 @@ class MemberController extends Controller
         ]);
     }
 
-    public function delete($ids)
+    public function destroy($ids)
     {
         $ids = explode(',', $ids);
 
@@ -84,7 +84,7 @@ class MemberController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status'  => 'error',
-                'message' => 'failed to delete member',
+                'message' => 'Failed to delete member',
                 'error'   => $e->getMessage(),
             ], 500);
         }

@@ -3,92 +3,49 @@ import formatValidationErrors from "../../utils/format-validation-errors";
 import { defineStore } from "pinia";
 import { useNotificationStore } from "../../components/shared/notification/notificationStore";
 
-export const useIncomeStore = defineStore("income", {
+export const useMemberStore = defineStore("members", {
     state: () => ({
         current_page: 1,
         total_pages: 0,
-        limit: 10,
+        limit: 20,
+        q_name: "",
+        q_phone: "",
+        members: [],
 
-        q_title: "",
-        q_category: "",
-        q_start_amount: "",
-        q_end_amount: "",
-        q_start_date: "",
-        q_end_date: "",
-        q_sort_column: "id",
-        q_sort_order: "desc",
+        edit_member_id: null,
+        view_member_id: null,
 
-        incomes: [],
-
-        edit_income_id: null,
-        view_income_id: null,
-
-        add_income_errors: {},
-
-        edit_income_errors: {},
-
-        current_income_item: {
+        add_member_errors: {},
+        edit_member_errors: {},
+        current_member_item: {
             id: "",
-            title: "",
-            amount: "",
-            date: "",
-            description: "",
-            categories: [],
+            name: "",
+            phone: "",
+            photo: "",
+            status: 1
         },
     }),
 
     getters: {},
 
     actions: {
-        resetCurrentIncomeData() {
-            this.current_income_item = {
+        resetCurrentMemberData() {
+            this.current_member_item = {
                 id: "",
-                title: "",
-                amount: "",
-                date: "",
-                description: "",
-                categories: [],
+                name: "",
+                phone: "",
+                photo: "",
+                status: 1
             };
-            this.add_income_errors = [];
-            this.edit_income_errors = [];
+            this.add_member_errors = [];
+            this.edit_member_errors = [];
         },
 
-        fetchIncomes(page, limit, q_title = "") {
+        fetchMemberList() {
             return new Promise((resolve, reject) => {
                 axios
-                    .get(
-                        `/api/incomes?page=${page}&limit=${limit}&title=${q_title}&category=${this.q_category}&start_amount=${this.q_start_amount}&end_amount=${this.q_end_amount}&start_date=${this.q_start_date}&end_date=${this.q_end_date}&sort_column=${this.q_sort_column}&sort_order=${this.q_sort_order}`
-                    )
+                    .get(`/api/members?limit=100`)
                     .then((response) => {
-                        this.incomes = response.data.data;
-                        if (response.data.meta) {
-                            this.total_pages = response.data.meta.last_page;
-                            this.current_page = response.data.meta.current_page;
-                            this.limit = response.data.meta.per_page;
-                            this.q_title = q_title;
-                        }
-                        resolve(this.incomes);
-                    })
-                    .catch((errors) => {
-                        reject(errors);
-                    });
-            });
-        },
-
-        async fetchIncome(id) {
-            return new Promise((resolve, reject) => {
-                axios
-                    .get(`/api/incomes/${id}`)
-                    .then((response) => {
-                        this.current_income_item = response.data.data;
-
-                        this.current_income_item.categories_details =
-                            response.data.data.categories;
-
-                        this.current_income_item.categories =
-                            response.data.data.categories.map(
-                                (item) => item.value
-                            );
                         resolve(response.data.data);
                     })
                     .catch((errors) => {
@@ -97,15 +54,52 @@ export const useIncomeStore = defineStore("income", {
             });
         },
 
-        async addIncome(data) {
+        fetchMembers(page, limit, q_name = "", q_phone = "") {
             return new Promise((resolve, reject) => {
                 axios
-                    .post(`/api/incomes`, data)
+                    .get(
+                        `/api/members?page=${page}&limit=${limit}&name=${q_name}&phone=${q_phone}`
+                    )
                     .then((response) => {
-                        this.resetCurrentIncomeData();
+                        this.members = response.data.data;
+                        if (response.data.meta) {
+                            this.total_pages = response.data.meta.last_page;
+                            this.current_page = response.data.meta.current_page;
+                            this.limit = response.data.meta.per_page;
+                            this.q_name = q_name;
+                            this.q_phone = q_phone;
+                        }
+                        resolve(this.members);
+                    })
+                    .catch((errors) => {
+                        reject(errors);
+                    });
+            });
+        },
+
+        async fetchMember(id) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .get(`/api/members/${id}`)
+                    .then((response) => {
+                        this.current_member_item = response.data.data;
+                        resolve(response.data.data);
+                    })
+                    .catch((errors) => {
+                        reject(errors);
+                    });
+            });
+        },
+
+        async addMember(data) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .post(`/api/members`, data)
+                    .then((response) => {
+                        this.resetCurrentMemberData();
                         const notifcationStore = useNotificationStore();
                         notifcationStore.pushNotification({
-                            message: "Income Added Successfully",
+                            message: "Member Added Successfully",
                             type: "success",
                             time: 2000,
                         });
@@ -120,25 +114,29 @@ export const useIncomeStore = defineStore("income", {
                             time: 2000,
                         });
 
-                        if (error.response.status == 422) {
-                            this.add_income_errors = formatValidationErrors(
-                                error.response.data.errors
-                            );
+                        if (error.response.status === 422) {
+                            this.add_member_errors =
+                                formatValidationErrors(
+                                    error.response.data.errors
+                                );
                         }
                         reject(error);
                     });
             });
         },
 
-        async editIncome(data) {
+        async editMember(data) {
             return new Promise((resolve, reject) => {
                 axios
-                    .put(`/api/incomes/${this.edit_income_id}`, data)
+                    .put(
+                        `/api/members/${this.edit_member_id}`,
+                        data
+                    )
                     .then((response) => {
-                        this.resetCurrentIncomeData();
+                        this.resetCurrentMemberData();
                         const notifcationStore = useNotificationStore();
                         notifcationStore.pushNotification({
-                            message: "income record updated successfully",
+                            message: "Member updated successfully",
                             type: "success",
                         });
                         resolve(response);
@@ -151,43 +149,54 @@ export const useIncomeStore = defineStore("income", {
                             type: "error",
                         });
 
-                        if (errors.response.status == 422) {
-                            this.edit_income_errors = formatValidationErrors(
-                                errors.response.data.errors
-                            );
+                        if (errors.response.status === 422) {
+                            this.edit_member_errors =
+                                formatValidationErrors(
+                                    errors.response.data.errors
+                                );
                         }
                         reject(errors);
                     });
             });
         },
 
-        async deleteIncome(id) {
+        async deleteMember(id) {
             return new Promise((resolve, reject) => {
                 axios
-                    .delete(`/api/incomes/${id}`)
+                    .delete(`/api/members/${id}`)
                     .then((response) => {
                         if (
-                            this.incomes.length == 1 ||
+                            this.members.length === 1 ||
                             (Array.isArray(id) &&
-                                id.length == this.incomes.length)
+                                id.length === this.members.length)
                         ) {
-                            this.current_page == 1
+                            this.current_page === 1
                                 ? (this.current_page = 1)
                                 : (this.current_page -= 1);
                         }
 
-                        this.resetCurrentIncomeData();
+                        this.resetCurrentMemberData();
                         const notifcationStore = useNotificationStore();
                         notifcationStore.pushNotification({
-                            message: "income deleted successfully",
+                            message: "Member data deleted successfully",
                             type: "success",
                             time: 2000,
                         });
 
                         resolve(response);
                     })
-                    .catch((error) => {
-                        reject(error);
+                    .catch((errors) => {
+                        const errorMessage =
+                            errors.response?.data?.message || "An error occurred while deleting the member.";
+
+                        const notifcationStore = useNotificationStore();
+                        notifcationStore.pushNotification({
+                            message: errorMessage,
+                            type: "error",
+                            time: 3000,
+                        });
+
+                        reject(errors);
                     });
             });
         },

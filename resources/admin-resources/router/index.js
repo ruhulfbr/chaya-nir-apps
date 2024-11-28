@@ -18,20 +18,20 @@ const router = createRouter({
                         import("../modules/dashboard/Dashboard.vue"),
                 },
 
-                // Incomes Route
+                // Member
                 {
-                    name: "incomes",
-                    path: "incomes",
-                    component: () => import("../modules/income/Incomes.vue"),
-                },
-                // Incomes Category Route
-                {
-                    name: "income_categories",
-                    path: "income-categories",
+                    name: "members",
+                    path: "members",
                     component: () =>
                         import(
-                            "../modules/income-category/IncomeCategories.vue"
-                        ),
+                            "../modules/members/Members.vue"
+                            ),
+                },
+
+                {
+                    name: "deposits",
+                    path: "deposits",
+                    component: () => import("../modules/deposit/Deposits.vue"),
                 },
 
                 // Expenses Route
@@ -39,26 +39,7 @@ const router = createRouter({
                     name: "expenses",
                     path: "expenses",
                     component: () => import("../modules/expense/Expenses.vue"),
-                },
-                // Expenses Category Route
-                {
-                    name: "expense_categories",
-                    path: "expense-categories",
-                    component: () =>
-                        import(
-                            "../modules/expense-category/ExpenseCategories.vue"
-                        ),
-                },
-
-                // Demo Site Visitors Track 
-                {
-                    name: "visitors",
-                    path: "visitors",
-                    component: () =>
-                        import(
-                            "../modules/visitor/Visitors.vue"
-                        ),
-                },
+                }
             ],
         },
     ],

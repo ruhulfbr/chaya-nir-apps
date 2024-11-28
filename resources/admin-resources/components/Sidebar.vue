@@ -12,40 +12,20 @@ const navlinks = [
     },
 
     {
-        label: "income",
-        link: "/admin/incomes",
-        icon_name: "wallet-svg-icon",
-        sub_links: [
-            {
-                label: "income list",
-                link: "/admin/incomes",
-            },
-            {
-                label: "income categories",
-                link: "/admin/income-categories",
-            },
-        ],
+        label: "deposit",
+        link: "/admin/deposits",
+        icon_name: "wallet-svg-icon"
     },
 
     {
         label: "expense",
         link: "/admin/expenses",
-        icon_name: "bank-card-svg-icon",
-        sub_links: [
-            {
-                label: "expense list",
-                link: "/admin/expenses",
-            },
-            {
-                label: "expense categories",
-                link: "/admin/expense-categories",
-            },
-        ],
+        icon_name: "bank-card-svg-icon"
     },
 
     {
-        label: "site visitors",
-        link: "/admin/visitors",
+        label: "members",
+        link: "/admin/members",
         icon_name: "customer-svg-icon",
     },
 

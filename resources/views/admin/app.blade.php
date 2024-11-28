@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>finnaf</title>
+    <title>{{ config('app_name', 'Chaya Nir') }}</title>
 </head>
 <body>
     <div id="finnaf-admin"></div>
