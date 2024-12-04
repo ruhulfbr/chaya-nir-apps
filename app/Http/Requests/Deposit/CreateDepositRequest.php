@@ -18,10 +18,9 @@ class CreateDepositRequest extends FormRequest
             'member_id' => ['required', 'exists:members,id'],
             'received_by' => ['nullable', 'exists:members,id'],
             'amount' => ['numeric', 'required'],
-            'comment' => ['string', 'nullable'],
-            'slip' => ['string', 'nullable', 'max:255'],
-            'method' => ['string', 'nullable', 'max:100'],
-            'deposit_at' => ['date', 'required'],
+            'comment' => ['required', 'string', 'max:5000'],
+            'slip' => ['nullable', 'string', 'max:255'],
+            'deposit_at' => ['required', 'date'],
         ];
     }
 }

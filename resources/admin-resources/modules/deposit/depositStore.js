@@ -8,7 +8,6 @@ export const useDepositStore = defineStore("deposit", {
         current_page: 1,
         total_pages: 0,
         limit: 20,
-
         q_search: "",
         q_member: "",
         q_amount: "",
@@ -33,8 +32,7 @@ export const useDepositStore = defineStore("deposit", {
             amount: "",
             deposit_at: "",
             comment: "",
-            slip: "",
-            method: ""
+            slip: ""
         },
     }),
 
@@ -49,8 +47,7 @@ export const useDepositStore = defineStore("deposit", {
                 amount: "",
                 deposit_at: "",
                 comment: "",
-                slip: "",
-                method: ""
+                slip: ""
             };
             this.add_deposit_errors = [];
             this.edit_deposit_errors = [];
@@ -83,9 +80,6 @@ export const useDepositStore = defineStore("deposit", {
                         resolve(this.deposits);
                     })
                     .catch((errors) => {
-
-                        console.log(errors)
-
                         reject(errors);
                     });
             });
@@ -121,9 +115,13 @@ export const useDepositStore = defineStore("deposit", {
                         resolve();
                     })
                     .catch((error) => {
+
+                        const errorMessage =
+                            error.response?.data?.message || "An error occurred while creating the deposit record.";
+
                         const notifcationStore = useNotificationStore();
                         notifcationStore.pushNotification({
-                            message: "Error Occurred",
+                            message: errorMessage,
                             type: "error",
                             time: 2000,
                         });
@@ -152,12 +150,15 @@ export const useDepositStore = defineStore("deposit", {
                         resolve(response);
                     })
                     .catch((errors) => {
-                        console.log(errors);
+                        const errorMessage =
+                            errors.response?.data?.message || "An error occurred while updating the deposit record.";
+
                         const notifcationStore = useNotificationStore();
                         notifcationStore.pushNotification({
-                            message: "Error Occurred",
-                            type: "error",
+                            message: errorMessage,
+                            type: "error"
                         });
+
 
                         if (errors.response.status === 422) {
                             this.edit_deposit_errors = formatValidationErrors(
@@ -195,7 +196,17 @@ export const useDepositStore = defineStore("deposit", {
                         resolve(response);
                     })
                     .catch((error) => {
-                        reject(error);
+                        const errorMessage =
+                            errors.response?.data?.message || "An error occurred while deleting the deposit record.";
+
+                        const notifcationStore = useNotificationStore();
+                        notifcationStore.pushNotification({
+                            message: errorMessage,
+                            type: "error",
+                            time: 3000,
+                        });
+
+                        reject(errors);
                     });
             });
         },

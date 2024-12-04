@@ -1,10 +1,10 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import {computed, onMounted, ref} from "vue";
 import Loader from "../../components/shared/loader/Loader.vue";
 import Pagination from "../../components/shared/pagination/Pagination.vue";
-import { useConfirmStore } from "../../components/shared/confirm-alert/confirmStore.js";
-import { useDepositStore } from "./depositStore.js";
-import { useMemberStore } from "../members/memberStore.js";
+import {useConfirmStore} from "../../components/shared/confirm-alert/confirmStore.js";
+import {useDepositStore} from "./depositStore.js";
+import {useMemberStore} from "../members/memberStore.js";
 import BinSvgIcon from "../../assets/icons/bin-svg-icon.vue";
 import EditSvgIcon from "../../assets/icons/edit-svg-icon.vue";
 import ViewSvgIcon from "../../assets/icons/view-svg-icon.vue";
@@ -45,7 +45,7 @@ function select_all() {
 
 async function deleteData(id) {
     confirmStore
-        .show_box({ message: "Do you want to delete selected deposit?" })
+        .show_box({message: "Do you want to delete selected deposit?"})
         .then(async () => {
             if (confirmStore.do_action === true) {
                 depositStore.deleteDeposit(id).then(() => {
@@ -111,8 +111,8 @@ onMounted(async () => {
                     v-if="selected_deposits.length > 0"
                     @click="deleteData(selected_deposits)"
                 />
-                <AddNewButton @click="showAddDeposit = true" />
-                <FilterButton @click="filterTab = !filterTab" />
+                <AddNewButton @click="showAddDeposit = true"/>
+                <FilterButton @click="filterTab = !filterTab"/>
             </div>
         </div>
         <div class="p-1 my-2" v-if="filterTab">
@@ -121,7 +121,7 @@ onMounted(async () => {
                     <input
                         type="text"
                         class="form-control"
-                        placeholder="type name.."
+                        placeholder="Type anything"
                         v-model="q_search"
                         @keyup="fetchData(1, depositStore.limit, q_search)"
                     />
@@ -206,7 +206,7 @@ onMounted(async () => {
             </div>
         </div>
 
-        <Loader v-if="loading" />
+        <Loader v-if="loading"/>
         <div
             class="table-responsive bg-white shadow-sm"
             v-if="loading === false"
@@ -214,7 +214,7 @@ onMounted(async () => {
             <table class="table mb-0 table-hover">
                 <thead class="thead-dark">
                     <tr>
-                        <th>
+                        <th class="th-width-5">
                             <input
                                 type="checkbox"
                                 class="form-check-input"
@@ -222,42 +222,56 @@ onMounted(async () => {
                                 v-model="all_selected"
                             />
                         </th>
-                        <th>Title</th>
-                        <th>Amount</th>
-                        <th>Category</th>
-                        <th>Date</th>
-                        <th class="table-action-col">Action</th>
+                        <th class="th-width-20">Member</th>
+                        <th class="th-width-15">Amount</th>
+                        <th class="th-width-20">Slip</th>
+                        <th class="th-width-25">Deposit at</th>
+                        <th class="th-width-15 table-action-col">Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr v-for="deposit in deposits" :key="deposit.id">
-                        <td>
-                            <input
-                                type="checkbox"
-                                class="form-check-input"
-                                v-model="selected_deposits"
-                                :value="deposit.id"
-                            />
-                        </td>
-                        <td class="min150 max150">{{ deposit.member.name }}</td>
-                        <td class="min100 max100">{{ deposit.amount }}</td>
 
-                        <td class="min100 max100">{{ deposit.deposit_at }}</td>
-                        <td class="table-action-btns">
-                            <ViewSvgIcon
-                                color="#00CFDD"
-                                @click="openViewDepositModal(deposit.id)"
-                            />
-                            <EditSvgIcon
-                                color="#739EF1"
-                                @click="openEditDepositModal(deposit.id)"
-                            />
-                            <BinSvgIcon
-                                color="#FF7474"
-                                @click="deleteData(deposit.id)"
-                            />
-                        </td>
-                    </tr>
+
+                <tbody>
+
+                <tr v-if="deposits.length === 0">
+                    <td colspan="6" class="text-center">No data found</td>
+                </tr>
+
+                <tr v-for="deposit in deposits" :key="deposit.id">
+                    <td>
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            v-model="selected_deposits"
+                            :value="deposit.id"
+                        />
+                    </td>
+                    <td class="min150 max150">{{ deposit.member.name }}</td>
+                    <td class="min100 max100">{{ deposit.amount }}</td>
+                    <td class="min100 max100">
+                        <template v-if="deposit.slip">
+                            <a :href="deposit.slip" target="_blank">View Slip</a>
+                        </template>
+                        <template v-else>
+                            N/A
+                        </template>
+                    </td>
+                    <td class="min100 max100">{{ deposit.deposit_at }}</td>
+                    <td class="table-action-btns">
+                        <ViewSvgIcon
+                            color="#00CFDD"
+                            @click="openViewDepositModal(deposit.id)"
+                        />
+                        <EditSvgIcon
+                            color="#739EF1"
+                            @click="openEditDepositModal(deposit.id)"
+                        />
+                        <BinSvgIcon
+                            color="#FF7474"
+                            @click="deleteData(deposit.id)"
+                        />
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>

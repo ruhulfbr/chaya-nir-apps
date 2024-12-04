@@ -7,7 +7,7 @@ export const useExpenseCategoryStore = defineStore("expense_category", {
     state: () => ({
         current_page: 1,
         total_pages: 0,
-        limit: 10,
+        limit: 20,
         q_name: "",
         expense_categories: [],
         edit_expense_category_id: null,

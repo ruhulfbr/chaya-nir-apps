@@ -11,15 +11,14 @@ class DepositResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'amount' => $this->amount,
+            'amount' => number_format($this->amount),
             'comment' => $this->comment,
             'slip' => $this->slip,
-            'method' => $this->method,
-            'deposit_at' => date('Y-m-d', $this->deposit_at),
+            'deposit_at' => date('Y-m-d', strtotime($this->deposit_at)),
             'member' => $this->member,
             'received_by' => $this->receivedBy ?? null,
             'created_at' => date('Y-m-d H:i:s', strtotime($this->created_at)),
-            'updated_at' => date('Y-m-d H:i:s', strtotime($this->updated_at)),
+            'updated_at' => $this->updated_at ? date('Y-m-d H:i:s', strtotime($this->updated_at)) : ""
         ];
     }
 }

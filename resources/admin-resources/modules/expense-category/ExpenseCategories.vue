@@ -139,7 +139,7 @@ onMounted(async () => {
             <table class="table mb-0 table-hover">
                 <thead class="thead-dark">
                     <tr>
-                        <th>
+                        <th class="th-width-15">
                             <input
                                 type="checkbox"
                                 class="form-check-input"
@@ -147,8 +147,8 @@ onMounted(async () => {
                                 v-model="all_selected"
                             />
                         </th>
-                        <th>Name</th>
-                        <th class="table-action-col">Action</th>
+                        <th class="th-width-50">Name</th>
+                        <th class="th-width-25 table-action-col">Action</th>
                     </tr>
                 </thead>
                 <tbody>

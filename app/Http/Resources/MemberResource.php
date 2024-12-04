@@ -16,7 +16,7 @@ class MemberResource extends JsonResource
             'status'        => $this->status,
             'total_deposit' => $this->deposits_sum_amount ?? 0,
             'created_at' => date('Y-m-d H:i:s', strtotime($this->created_at)),
-            'updated_at' => date('Y-m-d H:i:s', strtotime($this->updated_at)),
+            'updated_at' => $this->updated_at ? date('Y-m-d H:i:s', strtotime($this->updated_at)) : ""
         ];
     }
 }

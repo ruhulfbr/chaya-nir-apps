@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Deposit extends Model
 {
-    protected $fillable = ['member_id', 'received_by', 'amount', 'comment', 'slip', 'method', 'deposit_at', 'created_by'];
+    protected $fillable = ['member_id', 'received_by', 'amount', 'comment', 'slip', 'deposit_at', 'created_by'];
 
 
     public function member(): HasOne
