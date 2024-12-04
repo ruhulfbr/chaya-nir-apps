@@ -10,15 +10,15 @@ class DepositResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'amount' => number_format($this->amount),
-            'comment' => $this->comment,
-            'slip' => $this->slip,
-            'deposit_at' => date('Y-m-d', strtotime($this->deposit_at)),
-            'member' => $this->member,
+            'id'          => $this->id,
+            'amount'      => number_format($this->amount),
+            'comment'     => $this->comment,
+            'slip'        => $this->slip,
+            'deposit_at'  => date('Y-m-d', strtotime($this->deposit_at)),
+            'member'      => $this->member,
             'received_by' => $this->receivedBy ?? null,
-            'created_at' => date('Y-m-d H:i:s', strtotime($this->created_at)),
-            'updated_at' => $this->updated_at ? date('Y-m-d H:i:s', strtotime($this->updated_at)) : ""
+            'created_at'  => $this->created_at?->format('Y-m-d H:i:s') ?? "",
+            'updated_at'  => $this->updated_at?->format('Y-m-d H:i:s') ?? ""
         ];
     }
 }
