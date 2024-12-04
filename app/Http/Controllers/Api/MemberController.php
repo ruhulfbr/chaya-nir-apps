@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\CreateMemberRequest;
 use App\Http\Requests\Member\UpdateMemberRequest;
-use App\Http\Resources\Member\MemberResource;
+use App\Http\Resources\MemberResource;
 use App\Models\Member;
 use Exception;
 use Illuminate\Http\Request;

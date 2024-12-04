@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\DepositController;
 use App\Http\Controllers\Api\MemberController;
@@ -37,6 +38,7 @@ Route::group(['prefix' => 'api', 'middleware' => ['auth']], function () {
 
     Route::resource('members', MemberController::class);
     Route::resource('deposits', DepositController::class);
+    Route::resource('category', CategoryController::class);
     Route::resource('expenses', ExpenseController::class);
 
     Route::get('/dashboard-reports', [ReportController::class, 'getDashBoardReports']);

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Expense\CreateExpenseRequest;
 use App\Http\Requests\Expense\UpdateExpenseRequest;
-use App\Http\Resources\Expense\ExpenseResource;
+use App\Http\Resources\ExpenseResource;
 use App\Models\Expense;
 use Exception;
 use Illuminate\Http\Request;
@@ -24,6 +24,7 @@ class ExpenseController extends Controller
         $end_date   = $request->query('end_date');
         $amount = $request->query('amount');
         $spent_by = $request->query('spent_by');
+        $category = $request->query('category_id');
 
         $expenses = Expense::query();
 
@@ -37,13 +38,16 @@ class ExpenseController extends Controller
              $query->whereDate('spent_at', '<=', $end_date);
         });
         $expenses->when($amount, function ($query, $amount) {
-             $query->where('amount', '=', $amount);
-         });
+             $query->where('amount', $amount);
+        });
         $expenses->when($spent_by, function ($query, $spent_by) {
-            $query->where('spent_by', '=', $spent_by);
+            $query->where('spent_by', $spent_by);
+        });
+        $expenses->when($category, function ($query, $category) {
+            $query->where('category_id', $category);
         });
 
-        $expenses = $expenses->orderBy($sort_column, $sort_order)->with('spentBy')->paginate($limit);
+        $expenses = $expenses->orderBy($sort_column, $sort_order)->with(['spentBy', 'category'])->paginate($limit);
 
         return ExpenseResource::collection($expenses);
     }

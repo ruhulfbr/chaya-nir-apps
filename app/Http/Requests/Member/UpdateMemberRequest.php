@@ -16,8 +16,7 @@ class UpdateMemberRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'numeric', 'digits_between:7,15'],
-            'photo' => ['nullable', 'string', 'max:255'],
+            'phone' => ['required', 'numeric', 'digits_between:7,15']
         ];
     }
 }

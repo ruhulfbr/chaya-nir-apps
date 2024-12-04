@@ -76,6 +76,16 @@ onMounted(async () => {
                         </form>
                     </div>
                 </div>
+
+                <div class="modal-footer">
+                    <button
+                        class="btn btn-danger btn-sm"
+                        @click="closeViewMemberModal"
+                    >
+                        Close
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>

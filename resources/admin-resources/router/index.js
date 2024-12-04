@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import {createRouter, createWebHistory} from "vue-router";
 
 const router = createRouter({
     mode: "hash",
@@ -39,7 +39,15 @@ const router = createRouter({
                     name: "expenses",
                     path: "expenses",
                     component: () => import("../modules/expense/Expenses.vue"),
-                }
+                },
+                {
+                    name: "expense_categories",
+                    path: "expense-categories",
+                    component: () =>
+                        import(
+                            "../modules/expense-category/ExpenseCategories.vue"
+                            ),
+                },
             ],
         },
     ],

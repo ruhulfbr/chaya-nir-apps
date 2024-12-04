@@ -9,12 +9,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Expense extends Model
 {
-    protected $fillable = ['title', 'description', 'amount', 'receipt', 'comment', 'spent_by', 'spent_at', 'created_by'];
+    protected $fillable = ['category_id', 'title', 'description', 'amount', 'receipt', 'spent_by', 'spent_at', 'created_by'];
 
-
-    public function spentBy(): HasOne
+    public function category(): BelongsTo
     {
-        return $this->hasOne(Member::class, 'id', 'spent_by');
+        return $this->belongsTo(Category::class);
+    }
+
+    public function spentBy(): BelongsTo
+    {
+        return $this->belongsTo(Member::class, 'id', 'spent_by');
     }
 
 }

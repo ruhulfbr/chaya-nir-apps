@@ -20,8 +20,19 @@ const navlinks = [
     {
         label: "expense",
         link: "/admin/expenses",
-        icon_name: "bank-card-svg-icon"
+        icon_name: "bank-card-svg-icon",
+        sub_links: [
+            {
+                label: "expenses",
+                link: "/admin/expenses",
+            },
+            {
+                label: "expense categories",
+                link: "/admin/expense-categories",
+            },
+        ],
     },
+
 
     {
         label: "members",

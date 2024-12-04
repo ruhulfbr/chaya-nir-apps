@@ -14,12 +14,11 @@ return new class() extends Migration
         Schema::create('deposits', function (Blueprint $table) {
             $table->id();
             $table->foreignId('member_id')->constrained('members');
-            $table->foreignId('received_by')->nullable()->constrained('members');
             $table->unsignedDouble('amount', 10, 2);
             $table->text('comment');
             $table->string('slip')->nullable();
-            $table->string('method')->nullable(); // How they deposit
             $table->dateTime('deposit_at')->nullable();
+            $table->foreignId('received_by')->nullable()->constrained('members');
             $table->foreignId('created_by')->constrained('users');
             $table->timestamps();
         });

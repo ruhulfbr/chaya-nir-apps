@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Deposit\CreateDepositRequest;
 use App\Http\Requests\Deposit\UpdateDepositRequest;
-use App\Http\Resources\Deposit\DepositResource;
+use App\Http\Resources\DepositResource;
 use App\Models\Deposit;
 use Exception;
 use Illuminate\Http\Request;
