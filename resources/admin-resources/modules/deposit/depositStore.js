@@ -1,14 +1,13 @@
 import axios from "axios";
 import formatValidationErrors from "../../utils/format-validation-errors";
-import { defineStore } from "pinia";
-import { useNotificationStore } from "../../components/shared/notification/notificationStore";
+import {defineStore} from "pinia";
+import {useNotificationStore} from "../../components/shared/notification/notificationStore";
 
 export const useDepositStore = defineStore("deposit", {
     state: () => ({
         current_page: 1,
         total_pages: 0,
         limit: 20,
-        q_search: "",
         q_member: "",
         q_amount: "",
         q_start_date: "",
@@ -17,14 +16,11 @@ export const useDepositStore = defineStore("deposit", {
         q_sort_order: "desc",
 
         deposits: [],
-
         edit_deposit_id: null,
         view_deposit_id: null,
 
         add_deposit_errors: {},
-
         edit_deposit_errors: {},
-
         current_deposit_item: {
             id: "",
             member_id: "",
@@ -35,9 +31,7 @@ export const useDepositStore = defineStore("deposit", {
             slip: ""
         },
     }),
-
     getters: {},
-
     actions: {
         resetCurrentDepositData() {
             this.current_deposit_item = {
@@ -52,12 +46,10 @@ export const useDepositStore = defineStore("deposit", {
             this.add_deposit_errors = [];
             this.edit_deposit_errors = [];
         },
-
         fetchDeposits(page, limit, q_search = "") {
             const params = {
                 page,
                 limit,
-                search: this.q_search,
                 member_id: this.q_member,
                 amount: this.q_amount,
                 start_date: this.q_start_date,
@@ -68,7 +60,7 @@ export const useDepositStore = defineStore("deposit", {
 
             return new Promise((resolve, reject) => {
                 axios
-                    .get("/api/deposits", { params })
+                    .get("/api/deposits", {params})
                     .then((response) => {
                         this.deposits = response.data.data;
                         if (response.data.meta) {
@@ -90,7 +82,6 @@ export const useDepositStore = defineStore("deposit", {
                     .get(`/api/deposits/${id}`)
                     .then((response) => {
                         this.current_deposit_item = response.data.data;
-
                         resolve(response.data.data);
                     })
                     .catch((errors) => {
@@ -158,7 +149,6 @@ export const useDepositStore = defineStore("deposit", {
                             message: errorMessage,
                             type: "error"
                         });
-
 
                         if (errors.response.status === 422) {
                             this.edit_deposit_errors = formatValidationErrors(

@@ -70,7 +70,7 @@ onMounted(async () => {
                                     disabled
                                     type="text"
                                     class="form-control"
-                                    v-model="member_data.total_deposit"
+                                    v-model="member_data.total_deposit_formatted"
                                 />
                             </div>
                         </form>

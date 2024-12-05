@@ -5,7 +5,7 @@ import Loader from "../../components/shared/loader/Loader.vue";
 import { useDepositStore } from "./depositStore.js";
 import Multiselect from "@vueform/multiselect";
 
-const props = defineProps(["income_id", "categories"]);
+const props = defineProps(["deposit_id", "members"]);
 const emit = defineEmits(["close", "refreshData"]);
 
 const loading = ref(false);
@@ -30,13 +30,13 @@ async function fetchData(id) {
     loading.value = false;
 }
 
-async function closeeditDepositModal() {
+async function closeEditDepositModal() {
     depositStore.resetCurrentDepositData();
     emit("close");
 }
 
 onMounted(async () => {
-    fetchData(props.income_id);
+    await fetchData(props.deposit_id);
 });
 </script>
 
@@ -45,88 +45,142 @@ onMounted(async () => {
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Income</h5>
+                    <h5 class="modal-title">Edit Deposit Data</h5>
                     <button type="button" class="close">
-                        <CrossSvgIcon @click="closeeditDepositModal" />
+                        <CrossSvgIcon @click="closeEditDepositModal" />
                     </button>
                 </div>
 
                 <div class="modal-body">
                     <Loader v-if="loading" />
-                    <div class="form-items" v-if="loading == false">
+                    <div class="form-items" v-if="loading === false">
                         <form action="">
                             <div class="form-item">
-                                <label class="my-2">Income Short Title</label>
-                                <p
-                                    class="text-danger"
-                                    v-if="depositStore.edit_deposit_errors.title"
+                                <label class="my-2 mb-1">Member <span class="text-danger">*</span></label>
+                                <select
+                                    class="form-select"
+                                    v-model="deposit_data.member_id"
+                                    :class="{
+                                        'border-danger': depositStore.edit_deposit_errors.member_id
+                                    }"
                                 >
-                                    {{ depositStore.edit_deposit_errors.title }}
-                                </p>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    v-model="deposit_data.title"
-                                />
+                                    <option value="">Select member</option>
+                                    <option
+                                        v-for="member in members"
+                                        :key="member.id"
+                                        :value="member.id"
+                                    >
+                                        {{ member.name }}
+                                    </option>
+                                </select>
+                                <span
+                                    class="text-danger"
+                                    v-if="depositStore.edit_deposit_errors.member_id"
+                                >
+                                {{ depositStore.edit_deposit_errors.member_id }}
+                            </span>
                             </div>
+
                             <div class="form-item">
-                                <label class="my-2">Income Category</label>
-                                <p
-                                    class="text-danger"
-                                    v-if="
-                                        depositStore.edit_deposit_errors
-                                            .categories
-                                    "
-                                >
-                                    {{
-                                        depositStore.edit_deposit_errors
-                                            .categories
-                                    }}
-                                </p>
-                                <Multiselect
-                                    :searchable="true"
-                                    mode="tags"
-                                    :hide-selected="false"
-                                    v-model="deposit_data.categories"
-                                    :options="categories"
-                                ></Multiselect>
-                            </div>
-                            <div class="form-item">
-                                <label class="my-2">Income Date</label>
-                                <p
-                                    class="text-danger"
-                                    v-if="depositStore.edit_deposit_errors.date"
-                                >
-                                    {{ depositStore.edit_deposit_errors.date }}
-                                </p>
-                                <input
-                                    type="date"
-                                    class="form-control"
-                                    v-model="deposit_data.date"
-                                />
-                            </div>
-                            <div class="form-item">
-                                <label class="my-2">Income Amount</label>
-                                <p
-                                    class="text-danger"
-                                    v-if="depositStore.edit_deposit_errors.amount"
-                                >
-                                    {{ depositStore.edit_deposit_errors.amount }}
-                                </p>
+                                <label class="my-2">Amount <span class="text-danger">*</span></label>
+
                                 <input
                                     type="number"
                                     class="form-control"
                                     v-model="deposit_data.amount"
+                                    :class="{
+                                    'border-danger': depositStore.edit_deposit_errors.amount
+                                }"
                                 />
+                                <span
+                                    class="text-danger"
+                                    v-if="depositStore.edit_deposit_errors.amount"
+                                >
+                                {{ depositStore.edit_deposit_errors.amount }}
+                            </span>
                             </div>
+
                             <div class="form-item">
-                                <label class="my-2">Description</label>
+                                <label class="my-2">Deposit Date <span class="text-danger">*</span></label>
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    v-model="deposit_data.deposit_at"
+                                    :class="{
+                                    'border-danger': depositStore.edit_deposit_errors.deposit_at
+                                }"
+                                />
+                                <span
+                                    class="text-danger"
+                                    v-if="depositStore.edit_deposit_errors.deposit_at"
+                                >
+                                {{ depositStore.edit_deposit_errors.deposit_at }}
+                            </span>
+                            </div>
+
+                            <div class="form-item">
+                                <label class="my-2">Comment <span class="text-danger">*</span></label>
                                 <textarea
-                                    v-model="deposit_data.description"
+                                    v-model="deposit_data.comment"
                                     class="form-control"
                                     rows="5"
+                                    :class="{
+                                    'border-danger': depositStore.edit_deposit_errors.comment
+                                }"
                                 ></textarea>
+                                <span
+                                    class="text-danger"
+                                    v-if="depositStore.edit_deposit_errors.comment"
+                                >
+                                {{ depositStore.edit_deposit_errors.comment }}
+                            </span>
                             </div>
+
+                            <div class="form-item">
+                                <label class="my-2">Slip URL</label>
+                                <input
+                                    type="url"
+                                    class="form-control"
+                                    v-model="deposit_data.slip"
+                                    :class="{
+                                    'border-danger': depositStore.edit_deposit_errors.slip
+                                }"
+                                />
+                                <span
+                                    class="text-danger"
+                                    v-if="depositStore.edit_deposit_errors.slip"
+                                >
+                                {{ depositStore.edit_deposit_errors.slip }}
+                            </span>
+                            </div>
+
+                            <div class="form-item">
+                                <label class="my-2">Received By</label>
+                                <select
+                                    class="form-select"
+                                    v-model="deposit_data.received_by"
+                                >
+                                    <option value="">Select who receive amount</option>
+                                    <option
+                                        :key="member.id"
+                                        :value="member.id"
+                                        v-for="member in members"
+                                        :class="{
+                                            'border-danger': depositStore.edit_deposit_errors.received_by
+                                        }"
+                                    >
+                                        {{ member.name }}
+                                    </option>
+                                </select>
+                                <span
+                                    class="text-danger"
+                                    v-if="depositStore.edit_deposit_errors.received_by"
+                                >
+                                {{ depositStore.edit_deposit_errors.received_by }}
+                            </span>
+                            </div>
+
+
                         </form>
                     </div>
                 </div>
@@ -134,7 +188,7 @@ onMounted(async () => {
                 <div class="modal-footer">
                     <button
                         class="btn btn-danger btn-sm"
-                        @click="closeeditDepositModal"
+                        @click="closeEditDepositModal"
                     >
                         Cancel
                     </button>

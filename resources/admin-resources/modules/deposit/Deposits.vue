@@ -118,21 +118,12 @@ onMounted(async () => {
         <div class="p-1 my-2" v-if="filterTab">
             <div class="row">
                 <div class="col-md-3 col-sm-6 my-1">
-                    <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Type anything"
-                        v-model="q_search"
-                        @keyup="fetchData(1, depositStore.limit, q_search)"
-                    />
-                </div>
-                <div class="col-md-3 col-sm-6 my-1">
                     <select
                         class="form-select"
                         v-model="depositStore.q_member"
                         @change="fetchData(1)"
                     >
-                        <option value="">select member</option>
+                        <option value="">Select Member</option>
                         <option
                             :key="member.id"
                             :value="member.id"
@@ -192,7 +183,7 @@ onMounted(async () => {
                 </div>
                 <div class="col-md-3 col-sm-6 my-1">
                     <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text">order</span>
+                        <span class="input-group-text">Order</span>
                         <select
                             class="form-select"
                             v-model="depositStore.q_sort_order"
@@ -213,24 +204,22 @@ onMounted(async () => {
         >
             <table class="table mb-0 table-hover">
                 <thead class="thead-dark">
-                    <tr>
-                        <th class="th-width-5">
-                            <input
-                                type="checkbox"
-                                class="form-check-input"
-                                @click="select_all"
-                                v-model="all_selected"
-                            />
-                        </th>
-                        <th class="th-width-20">Member</th>
-                        <th class="th-width-15">Amount</th>
-                        <th class="th-width-20">Slip</th>
-                        <th class="th-width-25">Deposit at</th>
-                        <th class="th-width-15 table-action-col">Action</th>
-                    </tr>
+                <tr>
+                    <th class="th-width-5">
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            @click="select_all"
+                            v-model="all_selected"
+                        />
+                    </th>
+                    <th class="th-width-20">Member</th>
+                    <th class="th-width-15">Amount</th>
+                    <th class="th-width-20">Slip</th>
+                    <th class="th-width-25">Deposit at</th>
+                    <th class="th-width-15 table-action-col">Action</th>
+                </tr>
                 </thead>
-
-
                 <tbody>
 
                 <tr v-if="deposits.length === 0">
@@ -247,10 +236,10 @@ onMounted(async () => {
                         />
                     </td>
                     <td class="min150 max150">{{ deposit.member.name }}</td>
-                    <td class="min100 max100">{{ deposit.amount }}</td>
+                    <td class="min100 max100">{{ deposit.amount_formatted }}</td>
                     <td class="min100 max100">
                         <template v-if="deposit.slip">
-                            <a :href="deposit.slip" target="_blank">View Slip</a>
+                            <a :href="deposit.slip" target="_blank" class="link-primary">View Slip</a>
                         </template>
                         <template v-else>
                             N/A

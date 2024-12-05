@@ -183,7 +183,7 @@ onMounted(async () => {
                         </td>
                         <td class="min150 max150">{{ member.name }}</td>
                         <td class="min150 max150">{{ member.phone }}</td>
-                        <td class="min150 max150">{{ member.total_deposit }}</td>
+                        <td class="min150 max150">{{ member.total_deposit_formatted }}</td>
                         <td class="table-action-btns">
                             <ViewSvgIcon
                                 color="#00CFDD"

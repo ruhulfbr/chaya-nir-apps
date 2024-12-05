@@ -94,6 +94,7 @@ onMounted(() => {
                             <label class="my-2">Deposit Date <span class="text-danger">*</span></label>
                             <input
                                 type="date"
+                                format=""
                                 class="form-control"
                                 v-model="deposit_data.deposit_at"
                                 :class="{

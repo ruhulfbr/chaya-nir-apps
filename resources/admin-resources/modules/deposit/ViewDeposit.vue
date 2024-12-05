@@ -4,7 +4,7 @@ import CrossSvgIcon from "../../assets/icons/cross-svg-icon.vue";
 import Loader from "../../components/shared/loader/Loader.vue";
 import { useDepositStore } from "./depositStore.js";
 
-const props = defineProps(["income_id"]);
+const props = defineProps(["deposit_id"]);
 const emit = defineEmits(["close", "refreshData"]);
 
 const loading = ref(false);
@@ -13,17 +13,17 @@ const deposit_data = computed(() => depositStore.current_deposit_item);
 
 async function fetchData(id) {
     loading.value = true;
-    await depositStore.fetchDeposit(id);
+    let data = await depositStore.fetchDeposit(id);
     loading.value = false;
 }
 
-async function closeViewIncomeModal() {
+async function closeViewDepositModal() {
     depositStore.resetCurrentDepositData();
     emit("close");
 }
 
 onMounted(async () => {
-    fetchData(props.income_id);
+    await fetchData(props.deposit_id);
 });
 </script>
 
@@ -32,69 +32,96 @@ onMounted(async () => {
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Income Record Details</h5>
+                    <h5 class="modal-title">Deposit Details</h5>
                     <button type="button" class="close">
-                        <CrossSvgIcon @click="closeViewIncomeModal" />
+                        <CrossSvgIcon @click="closeViewDepositModal" />
                     </button>
                 </div>
 
                 <div class="modal-body">
                     <Loader v-if="loading" />
-                    <div class="form-items" v-if="loading == false">
+                    <div class="form-items" v-if="loading === false">
                         <form action="">
                             <div class="form-item">
-                                <label class="my-2">Income Short Title: </label>
+                                <label class="my-2">Member: </label>
+                                <template v-if="deposit_data.member">
+                                    <input
+                                        disabled
+                                        type="text"
+                                        class="form-control"
+                                        v-model="deposit_data.member.name"
+                                    />
+                                </template>
+                            </div>
 
+                            <div class="form-item">
+                                <label class="my-2">Amount: </label>
                                 <input
                                     disabled
                                     type="text"
                                     class="form-control"
-                                    v-model="deposit_data.title"
+                                    :value="deposit_data.amount_formatted"
                                 />
                             </div>
                             <div class="form-item">
-                                <label class="my-2">Income Category: </label>
-                                <div>
-                                    <span
-                                        :key="income_cat.value"
-                                        v-for="income_cat in deposit_data.categories_details"
-                                        class="badge bg-primary m-1 px-2 shadow-sm py-2 rounded-2"
-                                    >
-                                        {{ income_cat.label }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="form-item">
-                                <label class="my-2">Income Date: </label>
+                                <label class="my-2">Deposit Date: </label>
 
                                 <input
                                     disabled
                                     type="date"
                                     class="form-control"
-                                    v-model="deposit_data.date"
+                                    v-model="deposit_data.deposit_at"
                                 />
                             </div>
-                            <div class="form-item">
-                                <label class="my-2">Income Amount: </label>
 
-                                <input
-                                    disabled
-                                    type="number"
-                                    class="form-control"
-                                    v-model="deposit_data.amount"
-                                />
-                            </div>
                             <div class="form-item">
-                                <label class="my-2">Description: </label>
+                                <label class="my-2">Comment: </label>
                                 <textarea
                                     disabled
-                                    v-model="deposit_data.description"
+                                    v-model="deposit_data.comment"
                                     class="form-control"
                                     rows="5"
                                 ></textarea>
                             </div>
+
+                            <div class="form-item mt-1">
+                                <label class="my-2">Slip: </label>
+
+                                <template v-if="deposit_data.slip">
+                                    <a :href="deposit_data.slip" target="_blank" class="ms-2 link-primary">View Slip</a>
+                                </template>
+                                <template v-else>
+                                    N/A
+                                </template>
+
+                            </div>
+
+                            <div class="form-item">
+                                <label class="my-2">Received By: </label>
+                                <template v-if="deposit_data.received_by_member">
+                                    <input
+                                        disabled
+                                        type="text"
+                                        class="form-control"
+                                        v-model="deposit_data.received_by_member.name"
+                                    />
+                                </template>
+                                <template v-else>
+                                    N/A
+                                </template>
+                            </div>
+
                         </form>
                     </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button
+                        class="btn btn-danger btn-sm"
+                        @click="closeViewDepositModal"
+                    >
+                        Close
+                    </button>
                 </div>
             </div>
         </div>

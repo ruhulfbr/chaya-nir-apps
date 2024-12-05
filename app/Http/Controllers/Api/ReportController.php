@@ -3,13 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use App\Models\Deposit;
 use App\Models\Expense;
-use App\Models\Income;
-use App\Models\Member;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -28,11 +24,11 @@ class ReportController extends Controller
                                  ->get();
 
         return response()->json([
-            'total_deposits'  => round($totalDeposits, 2),
-            'total_expenses'  => round($totalExpenses, 2),
-            'balance'         => round($balance, 2),
-            'today_deposits'  => round($todayDeposits, 2),
-            'today_expenses'  => round($todayExpenses, 2),
+            'total_deposits'  => number_format($totalDeposits),
+            'total_expenses'  => number_format($totalExpenses),
+            'balance'         => number_format($balance),
+            'today_deposits'  => number_format($todayDeposits),
+            'today_expenses'  => number_format($todayExpenses),
             'member_deposits' => $memberDeposits,
         ], 200);
     }

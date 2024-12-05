@@ -19,7 +19,6 @@ class DepositController extends Controller
         $sort_column = $request->query('sort_column', 'id');
         $sort_order  = $request->query('sort_order', 'desc');
 
-        $search     = $request->query('search');
         $memberId   = $request->query('member_id');
         $receivedBy = $request->query('received_by');
         $start_date = $request->query('start_date');
@@ -27,12 +26,9 @@ class DepositController extends Controller
         $amount     = $request->query('amount');
 
         $deposits = Deposit::query();
-        $deposits->when($search, function ($query, $search) {
-            $query->where('comment', 'LIKE', '%' . $search . '%');
+        $deposits->when($start_date, function ($query, $start_date) {
+            $query->whereDate('deposit_at', '>=', $start_date);
         })
-                 ->when($start_date, function ($query, $start_date) {
-                     $query->whereDate('deposit_at', '>=', $start_date);
-                 })
                  ->when($end_date, function ($query, $end_date) {
                      $query->whereDate('deposit_at', '<=', $end_date);
                  })
@@ -98,7 +94,7 @@ class DepositController extends Controller
         ], 200);
     }
 
-    public function delete($ids)
+    public function destroy(string $ids)
     {
         $ids = explode(',', $ids);
 
