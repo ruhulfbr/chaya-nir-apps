@@ -29,11 +29,13 @@ export const useExpenseStore = defineStore("expense", {
 
         current_expense_item: {
             id: "",
+            category_id: "",
             title: "",
             amount: "",
-            date: "",
             description: "",
-            categories: [],
+            receipt: "",
+            spent_at: "",
+            spent_by: "",
         },
     }),
 
@@ -43,11 +45,13 @@ export const useExpenseStore = defineStore("expense", {
         resetCurrentExpenseData() {
             this.current_expense_item = {
                 id: "",
+                category_id: "",
                 title: "",
                 amount: "",
-                date: "",
                 description: "",
-                categories: [],
+                receipt: "",
+                spent_at: "",
+                spent_by: "",
             };
             this.add_expense_errors = [];
             this.edit_expense_errors = [];

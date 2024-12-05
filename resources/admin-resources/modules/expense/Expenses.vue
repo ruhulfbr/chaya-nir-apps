@@ -14,6 +14,7 @@ import BulkDeleteButton from "../../components/buttons/BulkDeleteButton.vue";
 import AddExpense from "./AddExpense.vue";
 import EditExpense from "./EditExpense.vue";
 import ViewExpense from "./ViewExpense.vue";
+import {useMemberStore} from "../members/memberStore.js";
 
 const loading = ref(false);
 const filterTab = ref(true);
@@ -25,7 +26,9 @@ const expenseStore = useExpenseStore();
 const confirmStore = useConfirmStore();
 const expenses = computed(() => expenseStore.expenses);
 const expenseCategoryStore = useExpenseCategoryStore();
+const memberStore = useMemberStore();
 const expenseCategories = ref([]);
+const members = ref([]);
 const q_title = ref("");
 const selected_expenses = ref([]);
 const all_selected = ref(false);
@@ -98,6 +101,10 @@ onMounted(async () => {
     await fetchData(1);
     expenseCategoryStore.fetchCatList().then((response) => {
         expenseCategories.value = response;
+    });
+
+    memberStore.fetchMemberList().then((response) => {
+        members.value = response;
     });
 });
 </script>
@@ -259,7 +266,7 @@ onMounted(async () => {
                         <td class="min150 max150">{{ expense.category.name }}</td>
                         <td class="min100 max100">{{ expense.amount }}</td>
                         <td class="min100 max100">{{ expense.spent_at }}</td>
-                        <td class="min100 max100">{{ expense.spent_by.name }}</td>
+                        <td class="min100 max100">{{ expense.spent_by_member.name }}</td>
                         <td class="table-action-btns">
                             <ViewSvgIcon
                                 color="#00CFDD"
@@ -292,6 +299,7 @@ onMounted(async () => {
             <AddExpense
                 v-if="showAddExpense"
                 :categories="expenseCategories"
+                :members="members"
                 @close="showAddExpense = false"
                 @refreshData="fetchData(1)"
             />

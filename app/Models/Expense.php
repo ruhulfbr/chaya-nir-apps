@@ -18,6 +18,6 @@ class Expense extends Model
 
     public function spentBy(): BelongsTo
     {
-        return $this->belongsTo(Member::class, 'id', 'spent_by');
+        return $this->belongsTo(Member::class, 'spent_by');
     }
 }

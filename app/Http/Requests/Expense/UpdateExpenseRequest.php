@@ -15,12 +15,13 @@ class UpdateExpenseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['string', 'required', 'max:255'],
-            'description' => ['string', 'nullable'],
-            'amount' => ['numeric', 'required'],
-            'receipt' => ['string', 'nullable', 'max:255'],
-            'comment' => ['string', 'required', 'nullable'],
-            'spent_by' => ['nullable', 'exists:members,id'],
+            'title'       => ['required', 'string', 'max:255'],
+            'category_id' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'amount'      => ['required', 'numeric'],
+            'receipt'     => ['nullable', 'url', 'max:255'],
+            'spent_at'    => ['required', 'date'],
+            'spent_by'    => ['required', 'exists:members,id'],
         ];
     }
 }

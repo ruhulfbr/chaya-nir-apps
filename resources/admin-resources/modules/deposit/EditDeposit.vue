@@ -86,6 +86,7 @@ onMounted(async () => {
 
                                 <input
                                     type="number"
+                                    placeholder="Enter amount"
                                     class="form-control"
                                     v-model="deposit_data.amount"
                                     :class="{
@@ -104,6 +105,7 @@ onMounted(async () => {
                                 <label class="my-2">Deposit Date <span class="text-danger">*</span></label>
                                 <input
                                     type="date"
+                                    placeholder="Enter date"
                                     class="form-control"
                                     v-model="deposit_data.deposit_at"
                                     :class="{
@@ -122,6 +124,7 @@ onMounted(async () => {
                                 <label class="my-2">Comment <span class="text-danger">*</span></label>
                                 <textarea
                                     v-model="deposit_data.comment"
+                                    placeholder="Enter comment"
                                     class="form-control"
                                     rows="5"
                                     :class="{
@@ -140,6 +143,7 @@ onMounted(async () => {
                                 <label class="my-2">Slip URL</label>
                                 <input
                                     type="url"
+                                    placeholder="Enter slip url"
                                     class="form-control"
                                     v-model="deposit_data.slip"
                                     :class="{
