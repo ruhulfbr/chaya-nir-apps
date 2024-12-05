@@ -20,5 +20,4 @@ class Expense extends Model
     {
         return $this->belongsTo(Member::class, 'id', 'spent_by');
     }
-
 }

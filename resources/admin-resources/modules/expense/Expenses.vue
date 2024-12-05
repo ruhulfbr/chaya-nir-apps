@@ -28,17 +28,17 @@ const expenseCategoryStore = useExpenseCategoryStore();
 const expenseCategories = ref([]);
 const q_title = ref("");
 const selected_expenses = ref([]);
-const all_selectd = ref(false);
+const all_selected = ref(false);
 
 function select_all() {
-    if (all_selectd.value == false) {
+    if (all_selected.value === false) {
         selected_expenses.value = [];
         expenseStore.expenses.forEach((element) => {
             selected_expenses.value.push(element.id);
         });
-        all_selectd.value = true;
+        all_selected.value = true;
     } else {
-        all_selectd.value = false;
+        all_selected.value = false;
         selected_expenses.value = [];
     }
 }
@@ -47,7 +47,7 @@ async function deleteData(id) {
     confirmStore
         .show_box({ message: "Do you want to delete selected expense?" })
         .then(async () => {
-            if (confirmStore.do_action == true) {
+            if (confirmStore.do_action === true) {
                 expenseStore.deleteExpense(id).then(() => {
                     expenseStore.fetchExpenses(
                         expenseStore.current_page,
@@ -56,7 +56,7 @@ async function deleteData(id) {
                     );
 
                     if (Array.isArray(id)) {
-                        all_selectd.value = false;
+                        all_selected.value = false;
                         selected_expenses.value = [];
                     }
                 });
@@ -81,7 +81,7 @@ async function fetchData(
 ) {
     loading.value = true;
 
-    all_selectd.value = false;
+    all_selected.value = false;
     selected_expenses.value = [];
 
     try {
@@ -95,7 +95,7 @@ async function fetchData(
 }
 
 onMounted(async () => {
-    fetchData(1);
+    await fetchData(1);
     expenseCategoryStore.fetchCatList().then((response) => {
         expenseCategories.value = response;
     });
@@ -105,7 +105,7 @@ onMounted(async () => {
 <template>
     <div>
         <div class="page-top-box mb-2 d-flex flex-wrap">
-            <h3 class="h3">Expense List</h3>
+            <h3 class="h3">Expenses</h3>
             <div class="page-heading-actions ms-auto">
                 <BulkDeleteButton
                     v-if="selected_expenses.length > 0"
@@ -121,7 +121,7 @@ onMounted(async () => {
                     <input
                         type="text"
                         class="form-control"
-                        placeholder="type name.."
+                        placeholder="Search in title"
                         v-model="q_title"
                         @keyup="fetchData(1, expenseStore.limit, q_title)"
                     />
@@ -132,13 +132,13 @@ onMounted(async () => {
                         v-model="expenseStore.q_category"
                         @change="fetchData(1)"
                     >
-                        <option value="">select category</option>
+                        <option value="">Select category</option>
                         <option
                             :key="expenseCategory.value"
                             :value="expenseCategory.value"
                             v-for="expenseCategory in expenseCategories"
                         >
-                            {{ expenseCategory.label }}
+                            {{ expenseCategory.name }}
                         </option>
                     </select>
                 </div>
@@ -219,27 +219,33 @@ onMounted(async () => {
         <Loader v-if="loading" />
         <div
             class="table-responsive bg-white shadow-sm"
-            v-if="loading == false"
+            v-if="loading === false"
         >
             <table class="table mb-0 table-hover">
                 <thead class="thead-dark">
                     <tr>
-                        <th>
+                        <th class="th-width-5">
                             <input
                                 type="checkbox"
                                 class="form-check-input"
                                 @click="select_all"
-                                v-model="all_selectd"
+                                v-model="all_selected"
                             />
                         </th>
-                        <th>Title</th>
-                        <th>Amount</th>
-                        <th>Category</th>
-                        <th>Date</th>
-                        <th class="table-action-col">Action</th>
+                        <th class="th-width-20">Title</th>
+                        <th class="th-width-15">Category</th>
+                        <th class="th-width-10">Amount</th>
+                        <th class="th-width-15">Date</th>
+                        <th class="th-width-20">Expense by</th>
+                        <th class="th-width-15 table-action-col">Action</th>
                     </tr>
+
                 </thead>
                 <tbody>
+                    <tr v-if="expenses.length === 0">
+                        <td colspan="7" class="text-center">No data found</td>
+                    </tr>
+
                     <tr v-for="expense in expenses" :key="expense.id">
                         <td>
                             <input
@@ -250,17 +256,10 @@ onMounted(async () => {
                             />
                         </td>
                         <td class="min150 max150">{{ expense.title }}</td>
+                        <td class="min150 max150">{{ expense.category.name }}</td>
                         <td class="min100 max100">{{ expense.amount }}</td>
-                        <td class="min200 max200">
-                            <span
-                                :key="expense_cat.value"
-                                v-for="expense_cat in expense.categories"
-                                class="badge bg-primary m-1 px-2 shadow-sm py-1"
-                            >
-                                {{ expense_cat.label }}
-                            </span>
-                        </td>
-                        <td class="min100 max100">{{ expense.date }}</td>
+                        <td class="min100 max100">{{ expense.spent_at }}</td>
+                        <td class="min100 max100">{{ expense.spent_by.name }}</td>
                         <td class="table-action-btns">
                             <ViewSvgIcon
                                 color="#00CFDD"
@@ -280,14 +279,14 @@ onMounted(async () => {
             </table>
         </div>
         <Pagination
-            v-if="loading == false && expenses.length > 0"
+            v-if="loading === false && expenses.length > 0"
             :total_pages="expenseStore.total_pages"
             :current_page="expenseStore.current_page"
             :per_page="expenseStore.limit"
             @pageChange="
                 (currentPage) => fetchData(currentPage, expenseStore.limit)
             "
-            @perPageChange="(perpage) => fetchData(1, perpage)"
+            @perPageChange="(perPage) => fetchData(1, perPage)"
         />
         <div class="modals-container">
             <AddExpense

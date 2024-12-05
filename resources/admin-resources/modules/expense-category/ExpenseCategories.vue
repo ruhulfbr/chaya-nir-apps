@@ -147,7 +147,8 @@ onMounted(async () => {
                                 v-model="all_selected"
                             />
                         </th>
-                        <th class="th-width-50">Name</th>
+                        <th class="th-width-30">Name</th>
+                        <th class="th-width-20">Total Expense</th>
                         <th class="th-width-25 table-action-col">Action</th>
                     </tr>
                 </thead>
@@ -170,11 +171,8 @@ onMounted(async () => {
                             />
                         </td>
                         <td class="min150 max150">{{ expense_cat.name }}</td>
+                        <td class="min150 max150">{{ expense_cat.total_expense_formatted }}</td>
                         <td class="table-action-btns">
-                            <ViewSvgIcon
-                                color="#00CFDD"
-                                @click="openViewExpenseCatModal(expense_cat.id)"
-                            />
                             <EditSvgIcon
                                 color="#739EF1"
                                 @click="openEditExpenseCatModal(expense_cat.id)"
@@ -189,7 +187,7 @@ onMounted(async () => {
             </table>
         </div>
         <Pagination
-            v-if="loading == false && expense_categories.length > 0"
+            v-if="loading === false && expense_categories.length > 0"
             :total_pages="expenseCategoryStore.total_pages"
             :current_page="expenseCategoryStore.current_page"
             :per_page="expenseCategoryStore.limit"
@@ -212,13 +210,6 @@ onMounted(async () => {
                 "
                 @close="showEditExpenseCat = false"
                 @refreshData="fetchData(expenseCategoryStore.current_page)"
-            />
-            <ViewExpenseCat
-                v-if="showViewExpenseCat"
-                :expense_category_id="
-                    expenseCategoryStore.view_expense_category_id
-                "
-                @close="showViewExpenseCat = false"
             />
         </div>
     </div>

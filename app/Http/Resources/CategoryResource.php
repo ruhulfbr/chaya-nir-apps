@@ -13,6 +13,13 @@ class CategoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id'                      => $this->id,
+            'name'                    => $this->name,
+            'total_expense'           => $this->expenses_sum_amount ?? 0,
+            'total_expense_formatted' => number_format($this->expenses_sum_amount ?? 0),
+            'created_at'              => $this->created_at?->format('Y-m-d H:i:s') ?? "",
+            'updated_at'              => $this->updated_at?->format('Y-m-d H:i:s') ?? ""
+        ];
     }
 }

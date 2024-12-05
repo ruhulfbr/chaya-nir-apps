@@ -24,7 +24,7 @@ class CategoryController extends Controller
             $query->where('name', 'LIKE', '%'.$name.'%');
         });
 
-        $categories = $categories->orderBy('name')->paginate($limit);
+        $categories = $categories->withSum('expenses', 'amount')->orderBy('name')->paginate($limit);
 
         return CategoryResource::collection($categories);
     }
