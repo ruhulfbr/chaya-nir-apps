@@ -92,7 +92,6 @@ async function fetchData(
             loading.value = false;
         });
     } catch (error) {
-        // console.log(error);
         loading.value = false;
     }
 }

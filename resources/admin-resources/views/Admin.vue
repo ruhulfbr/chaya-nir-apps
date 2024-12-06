@@ -13,15 +13,9 @@ const authStore = useAuthStore();
 const confirmStore = useConfirmStore();
 
 onMounted(async () => {
-    adminReady.value = false;
-
-    await authStore.getAuthUser();
-
-    if (authStore.authenticated === false) {
-        window.location.href = "/";
-    } else {
+    setTimeout(function (){
         adminReady.value = true;
-    }
+    }, 1000)
 });
 </script>
 <template>
@@ -29,7 +23,7 @@ onMounted(async () => {
         <div v-if="adminReady === false" class="pt-5">
             <Loader/>
         </div>
-        <div id="app" v-if="adminReady === true && authStore.authenticated === true">
+        <div id="app" v-if="adminReady === true">
             <Sidebar/>
             <div id="main">
                 <Navbar/>

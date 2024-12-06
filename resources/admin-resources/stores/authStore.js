@@ -1,29 +1,27 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
 import axios from "axios";
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
         fetched: false,
         user: {},
-        authenticated: 0,
+        authenticated: false,
     }),
-
     getters: {},
-
     actions: {
         async getAuthUser() {
             await axios
                 .get(`/api/users/authenticated-user`)
                 .then((response) => {
+
+                    console.log(response)
+
                     this.user = response.data.user;
                     this.authenticated = response.data.authenticated;
                 })
                 .catch((errors) => {});
-        },
-
-        // userCan(ability) {
-        //     return this.permissions.includes(ability);
-        // },
+        }
     },
 });
+
+

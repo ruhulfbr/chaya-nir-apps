@@ -24,7 +24,7 @@
                         <div class="card-body">
                             <div class="text-center mb-5">
                                 <img src="{{ asset('img/finnaf-logo.png') }}" class='img-fluid mb-4'
-                                    style="max-width:200px">
+                                    style="max-width:200px" alt="">
                                 <h3>Login</h3>
                                 <p>Please fill the form to login</p>
                             </div>
@@ -61,10 +61,6 @@
                                     <button class="btn btn-primary" type="submit">Sign In</button>
                                 </div>
                             </form>
-                            <div class="mt-3">
-                                <a href="{{ route('registrationForm') }}">Don't have an account? Sign Up</a>
-                            </div>
-
                         </div>
                     </div>
                 </div>

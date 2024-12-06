@@ -6,8 +6,8 @@ const router = createRouter({
 
     routes: [
         {
-            path: "/admin",
-            name: "admin",
+            path: "/",
+            name: "home",
             component: () => import("../views/Admin.vue"),
             children: [
                 // dashboard route

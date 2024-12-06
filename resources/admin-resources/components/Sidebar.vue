@@ -7,28 +7,28 @@ const sidebarStore = useSidebar();
 const navlinks = [
     {
         label: "dashboard",
-        link: "/admin",
+        link: "/",
         icon_name: "dashboard-svg-icon",
     },
 
     {
         label: "deposit",
-        link: "/admin/deposits",
+        link: "/deposits",
         icon_name: "wallet-svg-icon"
     },
 
     {
         label: "expense",
-        link: "/admin/expenses",
+        link: "/expenses",
         icon_name: "bank-card-svg-icon",
         sub_links: [
             {
                 label: "expenses",
-                link: "/admin/expenses",
+                link: "/expenses",
             },
             {
                 label: "expense categories",
-                link: "/admin/expense-categories",
+                link: "/expense-categories",
             },
         ],
     },
@@ -36,21 +36,9 @@ const navlinks = [
 
     {
         label: "members",
-        link: "/admin/members",
+        link: "/members",
         icon_name: "customer-svg-icon",
     },
-
-    // {
-    //     label: "settings",
-    //     link: " ",
-    //     icon_name: "setting-svg-icon",
-    //     sub_links: [
-    //         {
-    //             label: "currency",
-    //             link: "/admin/currency",
-    //         },
-    //     ],
-    // },
 ];
 </script>
 

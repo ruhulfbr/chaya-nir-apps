@@ -7,7 +7,7 @@ export const useExpenseStore = defineStore("expense", {
     state: () => ({
         current_page: 1,
         total_pages: 0,
-        limit: 10,
+        limit: 20,
 
         q_title: "",
         q_category: "",

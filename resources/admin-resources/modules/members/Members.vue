@@ -4,6 +4,7 @@ import Loader from "../../components/shared/loader/Loader.vue";
 import Pagination from "../../components/shared/pagination/Pagination.vue";
 import { useConfirmStore } from "../../components/shared/confirm-alert/confirmStore.js";
 import { useMemberStore } from "./memberStore.js";
+import {useAuthStore} from "./../../stores/authStore.js";
 import BinSvgIcon from "../../assets/icons/bin-svg-icon.vue";
 import EditSvgIcon from "../../assets/icons/edit-svg-icon.vue";
 import ViewSvgIcon from "../../assets/icons/view-svg-icon.vue";
@@ -22,6 +23,7 @@ const showViewMember = ref(false);
 
 const confirmStore = useConfirmStore();
 const memberStore = useMemberStore();
+const authStore = useAuthStore();
 const members = computed(() => memberStore.members);
 const q_name = ref("");
 const q_phone = ref("");
@@ -93,13 +95,13 @@ async function fetchData(
                 loading.value = false;
             });
     } catch (error) {
-        // console.log(error);
         loading.value = false;
     }
 }
 
 onMounted(async () => {
     await fetchData(1);
+    await authStore.getAuthUser()
 });
 </script>
 
@@ -112,7 +114,7 @@ onMounted(async () => {
                     v-if="selected_members.length > 0"
                     @click="deleteData(selected_members)"
                 />
-                <AddNewButton @click="showAddMember = true" />
+                <AddNewButton v-if="authStore.authenticated === true" @click="showAddMember = true" />
                 <FilterButton @click="filterTab = !filterTab" />
             </div>
         </div>
@@ -189,11 +191,11 @@ onMounted(async () => {
                                 color="#00CFDD"
                                 @click="openViewMemberModal(member.id)"
                             />
-                            <EditSvgIcon
+                            <EditSvgIcon v-if="authStore.authenticated === true"
                                 color="#739EF1"
                                 @click="openEditMemberModal(member.id)"
                             />
-                            <BinSvgIcon
+                            <BinSvgIcon v-if="authStore.authenticated === true"
                                 color="#FF7474"
                                 @click="deleteData(member.id)"
                             />
