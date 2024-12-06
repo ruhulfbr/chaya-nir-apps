@@ -307,6 +307,7 @@ onMounted(async () => {
                 v-if="showEditExpense"
                 :expense_id="expenseStore.edit_expense_id"
                 :categories="expenseCategories"
+                :members="members"
                 @close="showEditExpense = false"
                 @refreshData="fetchData(expenseStore.current_page)"
             />

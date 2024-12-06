@@ -85,14 +85,6 @@ export const useExpenseStore = defineStore("expense", {
                     .get(`/api/expenses/${id}`)
                     .then((response) => {
                         this.current_expense_item = response.data.data;
-
-                        this.current_expense_item.categories_details =
-                            response.data.data.categories;
-
-                        this.current_expense_item.categories =
-                            response.data.data.categories.map(
-                                (item) => item.value
-                            );
                         resolve(response.data.data);
                     })
                     .catch((errors) => {
@@ -124,7 +116,7 @@ export const useExpenseStore = defineStore("expense", {
                             time: 2000,
                         });
 
-                        if (error.response.status == 422) {
+                        if (error.response.status === 422) {
                             this.add_expense_errors = formatValidationErrors(
                                 error.response.data.errors
                             );
@@ -142,7 +134,7 @@ export const useExpenseStore = defineStore("expense", {
                         this.resetCurrentExpenseData();
                         const notifcationStore = useNotificationStore();
                         notifcationStore.pushNotification({
-                            message: "expense record updated successfully",
+                            message: "Expense record updated successfully",
                             type: "success",
                         });
                         resolve(response);
@@ -155,7 +147,7 @@ export const useExpenseStore = defineStore("expense", {
                             type: "error",
                         });
 
-                        if (errors.response.status == 422) {
+                        if (errors.response.status === 422) {
                             this.edit_expense_errors = formatValidationErrors(
                                 errors.response.data.errors
                             );
@@ -171,11 +163,11 @@ export const useExpenseStore = defineStore("expense", {
                     .delete(`/api/expenses/${id}`)
                     .then((response) => {
                         if (
-                            this.expenses.length == 1 ||
+                            this.expenses.length === 1 ||
                             (Array.isArray(id) &&
-                                id.length == this.expenses.length)
+                                id.length === this.expenses.length)
                         ) {
-                            this.current_page == 1
+                            this.current_page === 1
                                 ? (this.current_page = 1)
                                 : (this.current_page -= 1);
                         }
@@ -183,7 +175,7 @@ export const useExpenseStore = defineStore("expense", {
                         this.resetCurrentExpenseData();
                         const notifcationStore = useNotificationStore();
                         notifcationStore.pushNotification({
-                            message: "expense deleted successfully",
+                            message: "Expense data deleted successfully",
                             type: "success",
                             time: 2000,
                         });

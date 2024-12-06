@@ -23,7 +23,7 @@ async function closeViewExpenseModal() {
 }
 
 onMounted(async () => {
-    fetchData(props.expense_id);
+    await fetchData(props.expense_id);
 });
 </script>
 
@@ -32,7 +32,7 @@ onMounted(async () => {
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Expense Record Details</h5>
+                    <h5 class="modal-title">Expense Details</h5>
                     <button type="button" class="close">
                         <CrossSvgIcon @click="closeViewExpenseModal" />
                     </button>
@@ -40,10 +40,10 @@ onMounted(async () => {
 
                 <div class="modal-body">
                     <Loader v-if="loading" />
-                    <div class="form-items" v-if="loading == false">
+                    <div class="form-items" v-if="loading === false">
                         <form action="">
                             <div class="form-item">
-                                <label class="my-2">Expense Short Title: </label>
+                                <label class="my-2">Title: </label>
 
                                 <input
                                     disabled
@@ -52,31 +52,27 @@ onMounted(async () => {
                                     v-model="expense_data.title"
                                 />
                             </div>
-                            <div class="form-item">
-                                <label class="my-2">Expense Category: </label>
-                                <div>
-                                    <span
-                                        :key="expense_cat.value"
-                                        v-for="expense_cat in expense_data.categories_details"
-                                        class="badge bg-primary m-1 px-2 shadow-sm py-2 rounded-2"
-                                    >
-                                        {{ expense_cat.label }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="form-item">
-                                <label class="my-2">Expense Date: </label>
-
+                            <div class="form-item" v-if="expense_data.category">
+                                <label class="my-2">Category: </label>
                                 <input
                                     disabled
-                                    type="date"
+                                    type="text"
                                     class="form-control"
-                                    v-model="expense_data.date"
+                                    v-model="expense_data.category.name"
                                 />
                             </div>
                             <div class="form-item">
-                                <label class="my-2">Expense Amount: </label>
+                                <label class="my-2">Date: </label>
 
+                                <input
+                                    disabled
+                                    type="text"
+                                    class="form-control"
+                                    v-model="expense_data.spent_at"
+                                />
+                            </div>
+                            <div class="form-item">
+                                <label class="my-2">Amount: </label>
                                 <input
                                     disabled
                                     type="number"
@@ -93,8 +89,38 @@ onMounted(async () => {
                                     rows="5"
                                 ></textarea>
                             </div>
+                            <div class="form-item" v-if="expense_data.spent_by_member">
+                                <label class="my-2">Spent By: </label>
+                                <input
+                                    disabled
+                                    type="text"
+                                    class="form-control"
+                                    v-model="expense_data.spent_by_member.name"
+                                />
+                            </div>
+
+                            <div class="form-item mt-3">
+                                <label class="my-2">Receipt: </label>
+
+                                <template v-if="expense_data.receipt">
+                                    <a :href="expense_data.receipt" target="_blank" class="ms-2 link-primary">View Receipt</a>
+                                </template>
+                                <template v-else>
+                                    N/A
+                                </template>
+
+                            </div>
                         </form>
                     </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button
+                        class="btn btn-danger btn-sm"
+                        @click="closeViewExpenseModal"
+                    >
+                        Close
+                    </button>
                 </div>
 
             </div>
