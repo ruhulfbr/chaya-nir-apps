@@ -36,7 +36,7 @@ Route::group(['prefix' => 'api'], function () {
 
 // Handling All Admin Routes
 Route::get('/{any?}', function () {
-    return view('admin.app');
+    return view('app');
 })->where('any', '.*')->name('home');
 
 

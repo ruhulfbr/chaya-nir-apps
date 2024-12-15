@@ -16,7 +16,10 @@ class LoginController extends Controller
             return redirect()->back();
         }
 
-        session(['link' => url()->previous()]);
+        if (!str_contains(url()->previous(), 'login')) {
+            session(['link' => url()->previous()]);
+        }
+
         return view('auth.login-form');
     }
 

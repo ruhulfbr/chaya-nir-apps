@@ -10,64 +10,61 @@
 </head>
 
 <body>
-    <div id="auth">
+<div id="auth">
 
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-8 mx-auto">
-                    @if ($login_error = Session::get('login-error'))
-                        <div class="alert alert-danger color-info shadow">
-                            {{ $login_error }}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-8 mx-auto">
+                @if ($login_error = Session::get('login-error'))
+                    <div class="alert alert-danger color-info shadow">
+                        {{ $login_error }}
+                    </div>
+                @endif
+                <div class="card pt-4">
+                    <div class="card-body">
+                        <div class="text-center mb-5">
+                            <img src="{{ asset('img/finnaf-logo.png') }}" class='img-fluid mb-2'
+                                 style="max-width:200px" alt="">
+                            <h3>Login</h3>
                         </div>
-                    @endif
-                    <div class="card pt-4">
-                        <div class="card-body">
-                            <div class="text-center mb-5">
-                                <img src="{{ asset('img/finnaf-logo.png') }}" class='img-fluid mb-4'
-                                    style="max-width:200px" alt="">
-                                <h3>Login</h3>
-                                <p>Please fill the form to login</p>
-                            </div>
-                            <form action="{{ route('login') }}" method="POST">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="email">Email</label>
-                                            @if ($errors->has('email'))
-                                                <div class="text-danger my-1">{{ $errors->first('email') }}</div>
-                                            @endif
-                                            <input type="email" id="email" class="form-control" name="email"
-                                                {{-- value="{{ @old('email') }}" --}}
-                                                value="ruhul11bd@gmail.com"
-                                                >
-                                        </div>
+                        <form action="{{ route('login') }}" method="POST">
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="email">Email <span class="text-danger">*</span></label>
+                                        <input type="email" id="email" placeholder="Enter email"
+                                               class="form-control @if($errors->has('email')) border-danger @endif"
+                                               name="email" value="{{ @old('email') }}" required />
+                                        @if ($errors->has('email'))
+                                            <span class="text-danger my-1">{{ $errors->first('email') }}</span>
+                                        @endif
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="password">Password</label>
-                                            @if ($errors->has('password'))
-                                                <div class="text-danger my-1">{{ $errors->first('password') }}</div>
-                                            @endif
-                                            <input type="password" id="email" class="form-control" name="password"
-                                                {{-- value="{{ @old('password') }}" --}}
-                                                value="01751raj"
-                                                >
-                                        </div>
-                                    </div>
-                                </diV>
-
-                                <div class="clearfix">
-                                    <button class="btn btn-primary" type="submit">Sign In</button>
                                 </div>
-                            </form>
-                        </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="password">Password <span class="text-danger">*</span></label>
+                                        <input type="password" id="email" placeholder="Enter password"
+                                               class="form-control @if($errors->has('password')) border-danger @endif"
+                                               name="password" value="" required/>
+                                        @if ($errors->has('password'))
+                                            <span class="text-danger my-1">{{ $errors->first('password') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </diV>
+
+                            <div class="clearfix mt-2 d-flex justify-content-end">
+                                <button class="btn btn-primary" type="submit">Sign In</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
+
+</div>
 </body>
 
 </html>

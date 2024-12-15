@@ -2,7 +2,7 @@
 import Sidebar from "../components/Sidebar.vue";
 import Navbar from "../components/Navbar.vue";
 import Loader from "../components/shared/loader/Loader.vue";
-import NoticationsContainer from "../components/shared/notification/notications-container.vue";
+import NotificationsContainer from "../components/shared/notification/notifications-container.vue";
 import ConfirmBox from "../components/shared/confirm-alert/confirm-box.vue";
 import {useConfirmStore} from "../components/shared/confirm-alert/confirmStore";
 import {onMounted, ref} from "vue";
@@ -36,23 +36,7 @@ onMounted(async () => {
         </div>
         <div class="admin-area-modals-container">
             <ConfirmBox v-if="confirmStore.show_confirm_box"/>
-            <NoticationsContainer/>
+            <NotificationsContainer/>
         </div>
     </div>
 </template>
-
-<style src="@vueform/multiselect/themes/default.css"></style>
-<style>
-    .multiselect-tag {
-        background: #5a8dee;
-    }
-
-    .multiselect-option.is-selected,
-    .multiselect-option.is-selected.is-pointed {
-        background: #5a8eeea4;
-    }
-
-    .multiselect-option.is-selected.is-pointed:hover {
-        background: #5a8eee;
-    }
-</style>

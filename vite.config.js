@@ -7,11 +7,8 @@ export default defineConfig({
         vue(),
         laravel({
             input: [
-                
-                
                 // invextry backend admin assets
-                'resources/admin-resources/main.js'
-
+                'resources/frontend/main.js'
             ],
             refresh: true,
         }),
