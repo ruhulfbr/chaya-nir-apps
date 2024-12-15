@@ -29,6 +29,7 @@ const q_name = ref("");
 const q_phone = ref("");
 const selected_members = ref([]);
 const all_selected = ref(false);
+const props = defineProps(["authenticated"]);
 
 function select_all() {
     if (all_selected.value === false) {
@@ -101,7 +102,6 @@ async function fetchData(
 
 onMounted(async () => {
     await fetchData(1);
-    await authStore.getAuthUser()
 });
 </script>
 

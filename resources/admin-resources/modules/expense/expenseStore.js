@@ -1,7 +1,8 @@
 import axios from "axios";
 import formatValidationErrors from "../../utils/format-validation-errors";
-import { defineStore } from "pinia";
-import { useNotificationStore } from "../../components/shared/notification/notificationStore";
+import {defineStore} from "pinia";
+import {useNotificationStore} from "../../components/shared/notification/notificationStore";
+import {handleErrors, handleSuccess} from "../../utils/handle-notification.js";
 
 export const useExpenseStore = defineStore("expense", {
     state: () => ({
@@ -74,6 +75,7 @@ export const useExpenseStore = defineStore("expense", {
                         resolve(this.expenses);
                     })
                     .catch((errors) => {
+                        handleErrors(errors)
                         reject(errors);
                     });
             });
@@ -88,6 +90,7 @@ export const useExpenseStore = defineStore("expense", {
                         resolve(response.data.data);
                     })
                     .catch((errors) => {
+                        handleErrors(errors)
                         reject(errors);
                     });
             });
@@ -99,29 +102,12 @@ export const useExpenseStore = defineStore("expense", {
                     .post(`/api/expenses`, data)
                     .then((response) => {
                         this.resetCurrentExpenseData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Expense Added Successfully",
-                            type: "success",
-                            time: 2000,
-                        });
-
+                        handleSuccess("Expense Added Successfully")
                         resolve();
                     })
-                    .catch((error) => {
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Error Occurred",
-                            type: "error",
-                            time: 2000,
-                        });
-
-                        if (error.response.status === 422) {
-                            this.add_expense_errors = formatValidationErrors(
-                                error.response.data.errors
-                            );
-                        }
-                        reject(error);
+                    .catch((errors) => {
+                        handleErrors(errors, this.add_expense_errors)
+                        reject(errors);
                     });
             });
         },
@@ -132,26 +118,11 @@ export const useExpenseStore = defineStore("expense", {
                     .put(`/api/expenses/${this.edit_expense_id}`, data)
                     .then((response) => {
                         this.resetCurrentExpenseData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Expense record updated successfully",
-                            type: "success",
-                        });
+                        handleSuccess("Expense record updated successfully")
                         resolve(response);
                     })
                     .catch((errors) => {
-                        console.log(errors);
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Error Occurred",
-                            type: "error",
-                        });
-
-                        if (errors.response.status === 422) {
-                            this.edit_expense_errors = formatValidationErrors(
-                                errors.response.data.errors
-                            );
-                        }
+                        handleErrors(errors, this.edit_expense_errors)
                         reject(errors);
                     });
             });
@@ -162,28 +133,17 @@ export const useExpenseStore = defineStore("expense", {
                 axios
                     .delete(`/api/expenses/${id}`)
                     .then((response) => {
-                        if (
-                            this.expenses.length === 1 ||
-                            (Array.isArray(id) &&
-                                id.length === this.expenses.length)
-                        ) {
-                            this.current_page === 1
-                                ? (this.current_page = 1)
-                                : (this.current_page -= 1);
+                        if (this.expenses.length === 1 || (Array.isArray(id) && id.length === this.expenses.length)) {
+                            this.current_page === 1 ? (this.current_page = 1) : (this.current_page -= 1);
                         }
 
                         this.resetCurrentExpenseData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Expense data deleted successfully",
-                            type: "success",
-                            time: 2000,
-                        });
-
+                        handleSuccess("Expense record deleted successfully")
                         resolve(response);
                     })
-                    .catch((error) => {
-                        reject(error);
+                    .catch((errors) => {
+                        handleErrors(errors)
+                        reject(errors);
                     });
             });
         },

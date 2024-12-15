@@ -1,7 +1,6 @@
 import axios from "axios";
-import formatValidationErrors from "../../utils/format-validation-errors";
 import { defineStore } from "pinia";
-import { useNotificationStore } from "../../components/shared/notification/notificationStore";
+import {handleErrors, handleSuccess} from "../../utils/handle-notification.js";
 
 export const useMemberStore = defineStore("members", {
     state: () => ({
@@ -47,6 +46,7 @@ export const useMemberStore = defineStore("members", {
                         resolve(response.data.data);
                     })
                     .catch((errors) => {
+                        handleErrors(errors)
                         reject(errors);
                     });
             });
@@ -70,6 +70,7 @@ export const useMemberStore = defineStore("members", {
                         resolve(this.members);
                     })
                     .catch((errors) => {
+                        handleErrors(errors)
                         reject(errors);
                     });
             });
@@ -84,6 +85,7 @@ export const useMemberStore = defineStore("members", {
                         resolve(response.data.data);
                     })
                     .catch((errors) => {
+                        handleErrors(errors)
                         reject(errors);
                     });
             });
@@ -95,29 +97,11 @@ export const useMemberStore = defineStore("members", {
                     .post(`/api/members`, data)
                     .then((response) => {
                         this.resetCurrentMemberData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Member Added Successfully",
-                            type: "success",
-                            time: 2000,
-                        });
-
+                        handleSuccess("Member Added Successfully");
                         resolve();
                     })
                     .catch((error) => {
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Error Occurred",
-                            type: "error",
-                            time: 2000,
-                        });
-
-                        if (error.response.status === 422) {
-                            this.add_member_errors =
-                                formatValidationErrors(
-                                    error.response.data.errors
-                                );
-                        }
+                        handleErrors(error, this.add_member_errors)
                         reject(error);
                     });
             });
@@ -132,28 +116,12 @@ export const useMemberStore = defineStore("members", {
                     )
                     .then((response) => {
                         this.resetCurrentMemberData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Member updated successfully",
-                            type: "success",
-                        });
+                        handleSuccess("Member Updated Successfully");
                         resolve(response);
                     })
-                    .catch((errors) => {
-                        console.log(errors);
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Error Occurred",
-                            type: "error",
-                        });
-
-                        if (errors.response.status === 422) {
-                            this.edit_member_errors =
-                                formatValidationErrors(
-                                    errors.response.data.errors
-                                );
-                        }
-                        reject(errors);
+                    .catch((error) => {
+                        handleErrors(error, this.edit_member_errors)
+                        reject(error);
                     });
             });
         },
@@ -174,29 +142,15 @@ export const useMemberStore = defineStore("members", {
                         }
 
                         this.resetCurrentMemberData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Member data deleted successfully",
-                            type: "success",
-                            time: 2000,
-                        });
-
+                        handleSuccess("Member Data Deleted Successfully");
                         resolve(response);
                     })
-                    .catch((errors) => {
-                        const errorMessage =
-                            errors.response?.data?.message || "An error occurred while deleting the member.";
-
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: errorMessage,
-                            type: "error",
-                            time: 3000,
-                        });
-
-                        reject(errors);
+                    .catch((error) => {
+                        handleErrors(error)
+                        reject(error);
                     });
             });
         },
     },
 });
+

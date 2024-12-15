@@ -2,6 +2,7 @@ import axios from "axios";
 import formatValidationErrors from "../../utils/format-validation-errors";
 import { defineStore } from "pinia";
 import { useNotificationStore } from "../../components/shared/notification/notificationStore";
+import {handleErrors, handleSuccess} from "../../utils/handle-notification.js";
 
 export const useExpenseCategoryStore = defineStore("expense_category", {
     state: () => ({
@@ -62,6 +63,7 @@ export const useExpenseCategoryStore = defineStore("expense_category", {
                         resolve(this.expense_categories);
                     })
                     .catch((errors) => {
+                        handleErrors(errors)
                         reject(errors);
                     });
             });
@@ -76,6 +78,7 @@ export const useExpenseCategoryStore = defineStore("expense_category", {
                         resolve(response.data.data);
                     })
                     .catch((errors) => {
+                        handleErrors(errors)
                         reject(errors);
                     });
             });
@@ -87,30 +90,12 @@ export const useExpenseCategoryStore = defineStore("expense_category", {
                     .post(`/api/category`, data)
                     .then((response) => {
                         this.resetCurrentExpenseCatData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Expense Category Added Successfully",
-                            type: "success",
-                            time: 2000,
-                        });
-
+                        handleSuccess("Expense Category Added Successfully")
                         resolve();
                     })
-                    .catch((error) => {
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Error Occurred",
-                            type: "error",
-                            time: 2000,
-                        });
-
-                        if (error.response.status === 422) {
-                            this.add_expense_category_errors =
-                                formatValidationErrors(
-                                    error.response.data.errors
-                                );
-                        }
-                        reject(error);
+                    .catch((errors) => {
+                        handleErrors(errors, this.add_expense_category_errors)
+                        reject(errors);
                     });
             });
         },
@@ -124,26 +109,11 @@ export const useExpenseCategoryStore = defineStore("expense_category", {
                     )
                     .then((response) => {
                         this.resetCurrentExpenseCatData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Expense category updated successfully",
-                            type: "success",
-                        });
+                        handleSuccess("Expense Category Updated Successfully")
                         resolve(response);
                     })
                     .catch((errors) => {
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Error Occurred",
-                            type: "error",
-                        });
-
-                        if (errors.response.status === 422) {
-                            this.edit_expense_category_errors =
-                                formatValidationErrors(
-                                    errors.response.data.errors
-                                );
-                        }
+                        handleErrors(errors, this.edit_expense_category_errors)
                         reject(errors);
                     });
             });
@@ -165,26 +135,11 @@ export const useExpenseCategoryStore = defineStore("expense_category", {
                         }
 
                         this.resetCurrentExpenseCatData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Expense category deleted successfully",
-                            type: "success",
-                            time: 2000,
-                        });
-
+                        handleSuccess("Expense Category Deleted Successfully")
                         resolve(response);
                     })
                     .catch((errors) => {
-                        const errorMessage =
-                            errors.response?.data?.message || "An error occurred while deleting the member.";
-
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: errorMessage,
-                            type: "error",
-                            time: 3000,
-                        });
-
+                        handleErrors(errors)
                         reject(errors);
                     });
             });

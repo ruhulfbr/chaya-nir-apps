@@ -15,7 +15,7 @@ const confirmStore = useConfirmStore();
 onMounted(async () => {
     setTimeout(function (){
         adminReady.value = true;
-    }, 1000)
+    }, 100)
 });
 </script>
 <template>

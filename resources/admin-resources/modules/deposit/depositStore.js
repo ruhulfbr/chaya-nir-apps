@@ -2,6 +2,7 @@ import axios from "axios";
 import formatValidationErrors from "../../utils/format-validation-errors";
 import {defineStore} from "pinia";
 import {useNotificationStore} from "../../components/shared/notification/notificationStore";
+import {handleErrors, handleSuccess,} from "../../utils/handle-notification.js";
 
 export const useDepositStore = defineStore("deposit", {
     state: () => ({
@@ -85,6 +86,7 @@ export const useDepositStore = defineStore("deposit", {
                         resolve(response.data.data);
                     })
                     .catch((errors) => {
+                        handleErrors(errors)
                         reject(errors);
                     });
             });
@@ -96,33 +98,12 @@ export const useDepositStore = defineStore("deposit", {
                     .post(`/api/deposits`, data)
                     .then((response) => {
                         this.resetCurrentDepositData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Deposit Added Successfully",
-                            type: "success",
-                            time: 2000,
-                        });
-
+                        handleSuccess("Deposit Added Successfully")
                         resolve();
                     })
-                    .catch((error) => {
-
-                        const errorMessage =
-                            error.response?.data?.message || "An error occurred while creating the deposit record.";
-
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: errorMessage,
-                            type: "error",
-                            time: 2000,
-                        });
-
-                        if (error.response.status === 422) {
-                            this.add_deposit_errors = formatValidationErrors(
-                                error.response.data.errors
-                            );
-                        }
-                        reject(error);
+                    .catch((errors) => {
+                        handleErrors(errors, this.add_deposit_errors)
+                        reject(errors);
                     });
             });
         },
@@ -133,28 +114,11 @@ export const useDepositStore = defineStore("deposit", {
                     .put(`/api/deposits/${this.edit_deposit_id}`, data)
                     .then((response) => {
                         this.resetCurrentDepositData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Deposit record updated successfully",
-                            type: "success",
-                        });
+                        handleSuccess("Deposit record updated successfully")
                         resolve(response);
                     })
                     .catch((errors) => {
-                        const errorMessage =
-                            errors.response?.data?.message || "An error occurred while updating the deposit record.";
-
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: errorMessage,
-                            type: "error"
-                        });
-
-                        if (errors.response.status === 422) {
-                            this.edit_deposit_errors = formatValidationErrors(
-                                errors.response.data.errors
-                            );
-                        }
+                        handleErrors(errors, this.edit_deposit_errors)
                         reject(errors);
                     });
             });
@@ -176,26 +140,11 @@ export const useDepositStore = defineStore("deposit", {
                         }
 
                         this.resetCurrentDepositData();
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: "Deposit deleted successfully",
-                            type: "success",
-                            time: 2000,
-                        });
-
+                        handleSuccess("Deposit deleted successfully")
                         resolve(response);
                     })
-                    .catch((error) => {
-                        const errorMessage =
-                            errors.response?.data?.message || "An error occurred while deleting the deposit record.";
-
-                        const notifcationStore = useNotificationStore();
-                        notifcationStore.pushNotification({
-                            message: errorMessage,
-                            type: "error",
-                            time: 3000,
-                        });
-
+                    .catch((errors) => {
+                        handleErrors(errors)
                         reject(errors);
                     });
             });

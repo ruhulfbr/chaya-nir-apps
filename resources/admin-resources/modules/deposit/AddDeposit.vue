@@ -2,7 +2,6 @@
 import {computed, onMounted} from "vue";
 import CrossSvgIcon from "../../assets/icons/cross-svg-icon.vue";
 import {useDepositStore} from "./depositStore.js";
-import Multiselect from "@vueform/multiselect";
 
 const emit = defineEmits(["close", "refreshData"]);
 const props = defineProps(["members"]);
