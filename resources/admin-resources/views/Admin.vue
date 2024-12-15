@@ -9,13 +9,15 @@ import {onMounted, ref} from "vue";
 import {useAuthStore} from "../stores/authStore";
 
 const adminReady = ref(false);
+const isAuthenticated = ref(false);
 const authStore = useAuthStore();
 const confirmStore = useConfirmStore();
 
 onMounted(async () => {
-    setTimeout(function (){
-        adminReady.value = true;
-    }, 100)
+    await authStore.getAuthUser()
+
+    adminReady.value = true;
+    isAuthenticated.value = authStore.authenticated
 });
 </script>
 <template>
@@ -28,7 +30,7 @@ onMounted(async () => {
             <div id="main">
                 <Navbar/>
                 <div class="main-content container-fluid">
-                    <router-view/>
+                    <router-view :isAuthenticated="isAuthenticated" />
                 </div>
             </div>
         </div>

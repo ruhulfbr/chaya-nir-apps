@@ -15,7 +15,7 @@ const router = createRouter({
                     name: "dashboard",
                     path: "",
                     component: () => import("../modules/dashboard/Dashboard.vue"),
-                    props: { authenticated: false }
+                    props: (route) => ({ isAuthenticated: route.meta.isAuthenticated }),
                 },
 
                 // Member
@@ -23,14 +23,14 @@ const router = createRouter({
                     name: "members",
                     path: "members",
                     component: () => import("../modules/members/Members.vue"),
-                    props: { authenticated: false }
+                    props: (route) => ({ isAuthenticated: route.meta.isAuthenticated }),
                 },
 
                 {
                     name: "deposits",
                     path: "deposits",
                     component: () => import("../modules/deposit/Deposits.vue"),
-                    props: { authenticated: false }
+                    props: (route) => ({ isAuthenticated: route.meta.isAuthenticated }),
                 },
 
                 // Expenses Route
@@ -38,13 +38,13 @@ const router = createRouter({
                     name: "expenses",
                     path: "expenses",
                     component: () => import("../modules/expense/Expenses.vue"),
-                    props: { authenticated: false }
+                    props: (route) => ({ isAuthenticated: route.meta.isAuthenticated }),
                 },
                 {
                     name: "expense_categories",
                     path: "expense-categories",
                     component: () => import("../modules/expense-category/ExpenseCategories.vue"),
-                    props: { authenticated: false }
+                    props: (route) => ({ isAuthenticated: route.meta.isAuthenticated }),
                 },
             ],
         },

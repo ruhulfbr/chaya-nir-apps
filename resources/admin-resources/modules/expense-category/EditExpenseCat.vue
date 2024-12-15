@@ -66,7 +66,15 @@ onMounted(async () => {
                                 <label class="my-2"
                                     >Expense Category Name</label
                                 >
-                                <p
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    v-model="expense_category_data.name"
+                                    :class="{
+                                        'border-danger': expenseCategoryStore.edit_expense_category_errors.name
+                                    }"
+                                />
+                                <span
                                     class="text-danger"
                                     v-if="
                                         expenseCategoryStore
@@ -77,12 +85,7 @@ onMounted(async () => {
                                         expenseCategoryStore
                                             .edit_expense_category_errors.name
                                     }}
-                                </p>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    v-model="expense_category_data.name"
-                                />
+                                </span>
                             </div>
                         </form>
                     </div>

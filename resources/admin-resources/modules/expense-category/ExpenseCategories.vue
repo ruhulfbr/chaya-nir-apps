@@ -29,6 +29,8 @@ const q_name = ref("");
 const selected_expense_cats = ref([]);
 const all_selected = ref(false);
 
+const props = defineProps(["isAuthenticated"]);
+
 function select_all() {
     if (all_selected.value === false) {
         selected_expense_cats.value = [];
@@ -108,10 +110,10 @@ onMounted(async () => {
             <h3 class="h3">Expense Category List</h3>
             <div class="page-heading-actions ms-auto">
                 <BulkDeleteButton
-                    v-if="selected_expense_cats.length > 0"
+                    v-if="props.isAuthenticated && selected_expense_cats.length > 0"
                     @click="deleteData(selected_expense_cats)"
                 />
-                <AddNewButton @click="showAddExpenseCat = true" />
+                <AddNewButton v-if="props.isAuthenticated" @click="showAddExpenseCat = true" />
                 <FilterButton @click="filterTab = !filterTab" />
             </div>
         </div>
@@ -172,7 +174,7 @@ onMounted(async () => {
                         </td>
                         <td class="min150 max150">{{ expense_cat.name }}</td>
                         <td class="min150 max150">{{ expense_cat.total_expense_formatted }}</td>
-                        <td class="table-action-btns">
+                        <td class="table-action-btns" v-if="props.isAuthenticated">
                             <EditSvgIcon
                                 color="#739EF1"
                                 @click="openEditExpenseCatModal(expense_cat.id)"
@@ -181,6 +183,9 @@ onMounted(async () => {
                                 color="#FF7474"
                                 @click="deleteData(expense_cat.id)"
                             />
+                        </td>
+                        <td v-else>
+                            --
                         </td>
                     </tr>
                 </tbody>

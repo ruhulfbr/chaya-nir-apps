@@ -26,9 +26,9 @@ const confirmStore = useConfirmStore();
 const memberStore = useMemberStore()
 const deposits = computed(() => depositStore.deposits);
 const members = ref([]);
-const q_search = ref("");
 const selected_deposits = ref([]);
 const all_selected = ref(false);
+const props = defineProps(["isAuthenticated"]);
 
 function select_all() {
     if (all_selected.value === false) {
@@ -89,7 +89,6 @@ async function fetchData(
             loading.value = false;
         });
     } catch (error) {
-        // console.log(error);
         loading.value = false;
     }
 }
@@ -108,10 +107,10 @@ onMounted(async () => {
             <h3 class="h3">Deposit List</h3>
             <div class="page-heading-actions ms-auto">
                 <BulkDeleteButton
-                    v-if="selected_deposits.length > 0"
+                    v-if="props.isAuthenticated && selected_deposits.length > 0"
                     @click="deleteData(selected_deposits)"
                 />
-                <AddNewButton @click="showAddDeposit = true"/>
+                <AddNewButton v-if="props.isAuthenticated" @click="showAddDeposit = true"/>
                 <FilterButton @click="filterTab = !filterTab"/>
             </div>
         </div>
@@ -251,11 +250,11 @@ onMounted(async () => {
                             color="#00CFDD"
                             @click="openViewDepositModal(deposit.id)"
                         />
-                        <EditSvgIcon
+                        <EditSvgIcon v-if="props.isAuthenticated"
                             color="#739EF1"
                             @click="openEditDepositModal(deposit.id)"
                         />
-                        <BinSvgIcon
+                        <BinSvgIcon v-if="props.isAuthenticated"
                             color="#FF7474"
                             @click="deleteData(deposit.id)"
                         />

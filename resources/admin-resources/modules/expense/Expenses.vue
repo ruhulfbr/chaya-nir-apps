@@ -33,6 +33,8 @@ const q_title = ref("");
 const selected_expenses = ref([]);
 const all_selected = ref(false);
 
+const props = defineProps(["isAuthenticated"]);
+
 function select_all() {
     if (all_selected.value === false) {
         selected_expenses.value = [];
@@ -114,10 +116,10 @@ onMounted(async () => {
             <h3 class="h3">Expenses</h3>
             <div class="page-heading-actions ms-auto">
                 <BulkDeleteButton
-                    v-if="selected_expenses.length > 0"
+                    v-if="props.isAuthenticated && selected_expenses.length > 0"
                     @click="deleteData(selected_expenses)"
                 />
-                <AddNewButton @click="showAddExpense = true" />
+                <AddNewButton v-if="props.isAuthenticated" @click="showAddExpense = true" />
                 <FilterButton @click="filterTab = !filterTab" />
             </div>
         </div>
@@ -271,11 +273,11 @@ onMounted(async () => {
                                 color="#00CFDD"
                                 @click="openViewExpenseModal(expense.id)"
                             />
-                            <EditSvgIcon
+                            <EditSvgIcon v-if="props.isAuthenticated"
                                 color="#739EF1"
                                 @click="openEditExpenseModal(expense.id)"
                             />
-                            <BinSvgIcon
+                            <BinSvgIcon v-if="props.isAuthenticated"
                                 color="#FF7474"
                                 @click="deleteData(expense.id)"
                             />

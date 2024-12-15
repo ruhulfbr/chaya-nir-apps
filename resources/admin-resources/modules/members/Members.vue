@@ -4,7 +4,6 @@ import Loader from "../../components/shared/loader/Loader.vue";
 import Pagination from "../../components/shared/pagination/Pagination.vue";
 import { useConfirmStore } from "../../components/shared/confirm-alert/confirmStore.js";
 import { useMemberStore } from "./memberStore.js";
-import {useAuthStore} from "./../../stores/authStore.js";
 import BinSvgIcon from "../../assets/icons/bin-svg-icon.vue";
 import EditSvgIcon from "../../assets/icons/edit-svg-icon.vue";
 import ViewSvgIcon from "../../assets/icons/view-svg-icon.vue";
@@ -23,13 +22,12 @@ const showViewMember = ref(false);
 
 const confirmStore = useConfirmStore();
 const memberStore = useMemberStore();
-const authStore = useAuthStore();
 const members = computed(() => memberStore.members);
 const q_name = ref("");
 const q_phone = ref("");
 const selected_members = ref([]);
 const all_selected = ref(false);
-const props = defineProps(["authenticated"]);
+const props = defineProps(["isAuthenticated"]);
 
 function select_all() {
     if (all_selected.value === false) {
@@ -111,10 +109,10 @@ onMounted(async () => {
             <h3 class="h3">Members</h3>
             <div class="page-heading-actions ms-auto">
                 <BulkDeleteButton
-                    v-if="selected_members.length > 0"
+                    v-if="props.isAuthenticated && selected_members.length > 0"
                     @click="deleteData(selected_members)"
                 />
-                <AddNewButton v-if="authStore.authenticated === true" @click="showAddMember = true" />
+                <AddNewButton v-if="props.isAuthenticated" @click="showAddMember = true" />
                 <FilterButton @click="filterTab = !filterTab" />
             </div>
         </div>
@@ -191,11 +189,11 @@ onMounted(async () => {
                                 color="#00CFDD"
                                 @click="openViewMemberModal(member.id)"
                             />
-                            <EditSvgIcon v-if="authStore.authenticated === true"
+                            <EditSvgIcon v-if="props.isAuthenticated"
                                 color="#739EF1"
                                 @click="openEditMemberModal(member.id)"
                             />
-                            <BinSvgIcon v-if="authStore.authenticated === true"
+                            <BinSvgIcon v-if="props.isAuthenticated"
                                 color="#FF7474"
                                 @click="deleteData(member.id)"
                             />
