@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\DepositController;
+use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\MemberController;
 use App\Http\Controllers\Api\ReportController;
-use App\Http\Controllers\Api\User\UserController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 

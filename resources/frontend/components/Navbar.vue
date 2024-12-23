@@ -7,13 +7,9 @@ import {useAuthStore} from "./../stores/authStore.js";
 import { useSidebar } from "../stores/sidebar";
 import {onMounted, ref} from "vue";
 const sidebarStore = useSidebar();
-const userStore = useSidebar();
-const authStore = useAuthStore();
 const userDropDown = ref(false);
 
-onMounted(async () => {
-    await authStore.getAuthUser()
-});
+const props = defineProps(["isAuthenticated", "authUser"]);
 
 </script>
 
@@ -21,9 +17,9 @@ onMounted(async () => {
     <nav class="navbar navbar-header navbar-expand navbar-light">
         <menuSvgIcon @click="sidebarStore.toggle()" />
         <ul class="navbar-nav d-flex align-items-center navbar-light ms-auto">
-            <div class="top-nav-item position-relative" v-if="authStore.authenticated === true">
+            <div class="top-nav-item position-relative" v-if="props.isAuthenticated === true">
                 <span @click="userDropDown = !userDropDown">
-                   {{ authStore.user.name }} <userSvgIcon width="25px" height="25px" />
+                   {{ props.authUser.name }} <userSvgIcon width="25px" height="25px" />
                 </span>
                 <div v-if="userDropDown" class="top-nav-dropdown">
                     <a class="top-nav-dropdown-item" href="/logout">

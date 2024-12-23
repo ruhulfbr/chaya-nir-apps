@@ -10,6 +10,7 @@ import {useAuthStore} from "../stores/authStore";
 
 const adminReady = ref(false);
 const isAuthenticated = ref(false);
+const authUser = ref({});
 const authStore = useAuthStore();
 const confirmStore = useConfirmStore();
 
@@ -18,6 +19,7 @@ onMounted(async () => {
 
     adminReady.value = true;
     isAuthenticated.value = authStore.authenticated
+    authUser.value = authStore.user
 });
 </script>
 <template>
@@ -28,7 +30,7 @@ onMounted(async () => {
         <div id="app" v-if="adminReady === true">
             <Sidebar/>
             <div id="main">
-                <Navbar/>
+                <Navbar :isAuthenticated="isAuthenticated" :authUser="authUser"/>
                 <div class="main-content container-fluid">
                     <router-view :isAuthenticated="isAuthenticated" />
                 </div>

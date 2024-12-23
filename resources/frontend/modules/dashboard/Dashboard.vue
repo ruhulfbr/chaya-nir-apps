@@ -9,6 +9,8 @@ import HandLoveSVGICon from "../../assets/icons/hand-love-svg-icon.vue";
 
 const loading = ref(false);
 const report_data = ref({});
+const member_deposits = ref([]);
+const category_expenses = ref([]);
 
 async function fetchData() {
     loading.value = true;
@@ -16,6 +18,8 @@ async function fetchData() {
         .get(`/api/dashboard-reports`)
         .then((response) => {
             report_data.value = response.data;
+            member_deposits.value = response.data.member_deposits
+            category_expenses.value = response.data.category_expenses
         })
         .catch((errors) => {
             console.log(errors);
@@ -110,6 +114,60 @@ onMounted(async () => {
                             }}</span>
                             <br />
                             <span>Balance</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-charts my-3 row">
+                <div class="col-md-6 p-1">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            Category wise Expenses
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <!-- Check if the items array is empty -->
+                                <li v-if="category_expenses.length === 0" class="list-group-item text-center">
+                                    Data not found
+                                </li>
+
+                                <!-- Render the list items if data exists -->
+                                <li
+                                    v-for="(item, index) in category_expenses"
+                                    :key="index"
+                                    class="list-group-item d-flex justify-content-between align-items-center"
+                                >
+                                    {{ item.category_name }}
+                                    <span class="badge bg-primary rounded-pill">{{ item.total_amount }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 p-1">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            Deposits From Members
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <!-- Check if the items array is empty -->
+                                <li v-if="member_deposits.length === 0" class="list-group-item text-center">
+                                    Data not found
+                                </li>
+
+                                <!-- Render the list items if data exists -->
+                                <li
+                                    v-for="(item, index) in member_deposits"
+                                    :key="index"
+                                    class="list-group-item d-flex justify-content-between align-items-center"
+                                >
+                                    {{ item.member_name }}
+                                    <span class="badge bg-primary rounded-pill">{{ item.total_amount }}</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>

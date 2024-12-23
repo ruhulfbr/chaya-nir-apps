@@ -13,9 +13,6 @@ export const useAuthStore = defineStore("auth", {
             await axios
                 .get(`/api/users/authenticated-user`)
                 .then((response) => {
-
-                    console.log(response)
-
                     this.user = response.data.user;
                     this.authenticated = response.data.authenticated;
                 })
