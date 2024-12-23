@@ -1,5 +1,9 @@
 import {createRouter, createWebHistory} from "vue-router";
 
+function PathNotFound() {
+    window.location.href = "/404";
+}
+
 const router = createRouter({
     mode: "hash",
     history: createWebHistory(),
@@ -48,6 +52,8 @@ const router = createRouter({
                 },
             ],
         },
+        // 404 fallback to Laravel
+        { path: '/:pathMatch(.*)*', component: PathNotFound },
     ],
 });
 

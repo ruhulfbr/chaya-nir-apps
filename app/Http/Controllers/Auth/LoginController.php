@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -23,6 +24,9 @@ class LoginController extends Controller
         return view('auth.login-form');
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
@@ -35,10 +39,12 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, 100)) {
             $request->session()->regenerate();
 
-            return redirect(session('link'));
+            return redirect()->intended(session('link', '/'));
         }
 
-        return back()->with('login-error', 'Incorrect Credentials Provided')->onlyInput('email', 'password');
+        throw ValidationException::withMessages([
+            'email' => __('auth.failed'),
+        ])->redirectTo('/login');
     }
 
     public function logout(Request $request): RedirectResponse

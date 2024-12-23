@@ -34,9 +34,13 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/dashboard-reports', [ReportController::class, 'getDashBoardReports']);
 });
 
+// 404 Managed
+Route::get('/404', function () {
+    abort(404);
+});
+
 // Handling All Admin Routes
 Route::get('/{any?}', function () {
     return view('app');
 })->where('any', '.*')->name('home');
-
 
