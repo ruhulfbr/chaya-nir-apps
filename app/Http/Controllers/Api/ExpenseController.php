@@ -8,6 +8,7 @@ use App\Http\Requests\Expense\UpdateExpenseRequest;
 use App\Http\Resources\ExpenseResource;
 use App\Models\Expense;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ExpenseController extends Controller
@@ -59,7 +60,7 @@ class ExpenseController extends Controller
         return new ExpenseResource($expense);
     }
 
-    public function store(CreateExpenseRequest $request)
+    public function store(CreateExpenseRequest $request): JsonResponse
     {
         try {
             $data               = $request->validated();
@@ -80,7 +81,7 @@ class ExpenseController extends Controller
         ], 201);
     }
 
-    public function update(UpdateExpenseRequest $request, $id)
+    public function update(UpdateExpenseRequest $request, $id): JsonResponse
     {
         $expense = Expense::where('id', $id)->firstOrFail();
 
@@ -100,7 +101,7 @@ class ExpenseController extends Controller
         ], 200);
     }
 
-    public function delete($ids)
+    public function destroy($ids): JsonResponse
     {
         $ids = explode(',', $ids);
 
