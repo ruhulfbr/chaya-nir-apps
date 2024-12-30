@@ -10,6 +10,7 @@ use App\Models\Expense;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExpenseController extends Controller
 {
@@ -72,13 +73,13 @@ class ExpenseController extends Controller
                 'status'  => 'error',
                 'message' => 'failed to create expense item',
                 'error'   => $e->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json([
             'status'  => 'success',
             'message' => 'expense record created successfully',
-        ], 201);
+        ], Response::HTTP_CREATED);
     }
 
     public function update(UpdateExpenseRequest $request, $id): JsonResponse
@@ -92,13 +93,13 @@ class ExpenseController extends Controller
                 'status'  => 'error',
                 'message' => 'failed to update expense',
                 'error'   => $e->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json([
             'status'  => 'success',
             'message' => 'expense updated successfully',
-        ], 200);
+        ]);
     }
 
     public function destroy($ids): JsonResponse
@@ -112,12 +113,12 @@ class ExpenseController extends Controller
                 'status'  => 'error',
                 'message' => 'failed to delete expense item',
                 'error'   => $e->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json([
             'status'  => 'success',
             'message' => 'expense item deleted successfully',
-        ], 204);
+        ], Response::HTTP_NO_CONTENT);
     }
 }

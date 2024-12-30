@@ -9,6 +9,7 @@ use App\Http\Resources\MemberResource;
 use App\Models\Member;
 use Exception;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class MemberController extends Controller
 {
@@ -44,15 +45,15 @@ class MemberController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status'  => 'error',
-                'message' => 'failed to create member',
+                'message' => 'Failed to create member',
                 'error'   => $e->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json([
             'status'  => 'success',
             'message' => 'Member created successfully',
-        ], 201);
+        ], Response::HTTP_CREATED);
     }
 
     public function update(UpdateMemberRequest $request, $id)
@@ -64,14 +65,14 @@ class MemberController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status'  => 'error',
-                'message' => 'failed to update member',
+                'message' => 'Failed to update member',
                 'error'   => $e->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json([
             'status'  => 'success',
-            'message' => 'member updated successfully',
+            'message' => 'Member updated successfully',
         ]);
     }
 
@@ -82,16 +83,25 @@ class MemberController extends Controller
         try {
             Member::whereIn('id', $ids)->delete();
         } catch (Exception $e) {
+
+            if ($e->getCode() === "23000") { // 23000 is the SQLSTATE code for integrity constraint violations
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Cannot delete this member because there are associated data.',
+                    'error'   => $e->getMessage(),
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
             return response()->json([
                 'status'  => 'error',
                 'message' => 'Failed to delete member',
                 'error'   => $e->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json([
             'status'  => 'success',
-            'message' => 'member deleted successfully',
-        ], 204);
+            'message' => 'Member deleted successfully',
+        ], Response::HTTP_NO_CONTENT);
     }
 }

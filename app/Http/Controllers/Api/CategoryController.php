@@ -21,7 +21,7 @@ class CategoryController extends Controller
 
         $categories = Category::query();
         $categories->when($name, function ($query, $name) {
-            $query->where('name', 'LIKE', '%'.$name.'%');
+            $query->where('name', 'LIKE', '%' . $name . '%');
         });
 
         $categories = $categories->withSum('expenses', 'amount')->orderBy('name')->paginate($limit);
@@ -38,17 +38,16 @@ class CategoryController extends Controller
     {
         try {
             Category::create($request->validated());
-
         } catch (Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Failed to create category',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json([
-            'status' => 'success',
+            'status'  => 'success',
             'message' => 'Category created successfully',
         ], Response::HTTP_CREATED);
     }
@@ -58,20 +57,17 @@ class CategoryController extends Controller
         try {
             $category->name = $request->name;
             $category->save();
-
         } catch (Exception $e) {
-
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Failed to update category',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
-
         }
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'income category updated successfully',
+            'status'  => 'success',
+            'message' => 'Category updated successfully',
         ], Response::HTTP_OK);
     }
 
@@ -83,17 +79,24 @@ class CategoryController extends Controller
             Category::whereIn('id', $ids)->delete();
         } catch (Exception $e) {
 
-            return response()->json([
-                'status' => 'error',
-                'message' => 'failed to delete category',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            if ($e->getCode() === "23000") { // 23000 is the SQLSTATE code for integrity constraint violations
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Cannot delete this category because there are associated expenses.',
+                    'error'   => $e->getMessage(),
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
 
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Failed to delete category ',
+                'error'   => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'income category deleted successfully',
+            'status'  => 'success',
+            'message' => 'Category deleted successfully',
         ], Response::HTTP_NO_CONTENT);
     }
 }
