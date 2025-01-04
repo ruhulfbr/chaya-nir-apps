@@ -142,8 +142,8 @@ onMounted(async () => {
                     >
                         <option value="">Select category</option>
                         <option
-                            :key="expenseCategory.value"
-                            :value="expenseCategory.value"
+                            :key="expenseCategory.id"
+                            :value="expenseCategory.id"
                             v-for="expenseCategory in expenseCategories"
                         >
                             {{ expenseCategory.name }}

@@ -26,7 +26,7 @@ class ExpenseController extends Controller
         $end_date   = $request->query('end_date');
         $amount = $request->query('amount');
         $spent_by = $request->query('spent_by');
-        $category = $request->query('category_id');
+        $category = $request->query('category');
 
         $expenses = Expense::query();
 
