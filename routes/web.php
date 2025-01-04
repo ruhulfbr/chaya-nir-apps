@@ -15,7 +15,6 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::group(['prefix' => 'api'], function () {
-
     Route::get('users/authenticated-user', [UserController::class, 'getAuthenticatedUser']);
 
     // Resource routes with auth middleware applied selectively
@@ -29,6 +28,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::resource('deposits', DepositController::class)->except(['store', 'update', 'destroy']);
     Route::resource('category', CategoryController::class)->except(['store', 'update', 'destroy']);
     Route::resource('expenses', ExpenseController::class)->except(['store', 'update', 'destroy']);
+    Route::get('expenses-by-date', [ExpenseController::class, 'dateWiseData']);
 
     // Public route
     Route::get('/dashboard-reports', [ReportController::class, 'getDashBoardReports']);

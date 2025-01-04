@@ -10,6 +10,8 @@ use App\Models\Expense;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExpenseController extends Controller
@@ -19,14 +21,17 @@ class ExpenseController extends Controller
         $limit = $this->getLimit($request);
 
         $sort_column = $request->query('sort_column', 'id');
-        $sort_order  = $request->query('sort_order', 'desc');
+        if ($sort_column == 'date') {
+            $sort_column = 'spent_at';
+        }
+        $sort_order = $request->query('sort_order', 'desc');
 
-        $title = $request->query('title');
+        $title      = $request->query('title');
         $start_date = $request->query('start_date');
         $end_date   = $request->query('end_date');
-        $amount = $request->query('amount');
-        $spent_by = $request->query('spent_by');
-        $category = $request->query('category');
+        $amount     = $request->query('amount');
+        $spent_by   = $request->query('spent_by');
+        $category   = $request->query('category');
 
         $expenses = Expense::query();
 
@@ -37,10 +42,10 @@ class ExpenseController extends Controller
             $query->whereDate('spent_at', '>=', $start_date);
         });
         $expenses->when($end_date, function ($query, $end_date) {
-             $query->whereDate('spent_at', '<=', $end_date);
+            $query->whereDate('spent_at', '<=', $end_date);
         });
         $expenses->when($amount, function ($query, $amount) {
-             $query->where('amount', $amount);
+            $query->where('amount', $amount);
         });
         $expenses->when($spent_by, function ($query, $spent_by) {
             $query->where('spent_by', $spent_by);
@@ -52,6 +57,28 @@ class ExpenseController extends Controller
         $expenses = $expenses->orderBy($sort_column, $sort_order)->with(['spentBy', 'category'])->paginate($limit);
 
         return ExpenseResource::collection($expenses);
+    }
+
+    public function dateWiseData()
+    {
+        $data = Cache::remember('expenses_grouped_by_date', 60 * 60 * 24, function () {
+            return Expense::select(DB::raw('DATE(spent_at) as date'), DB::raw('SUM(amount) as total_amount'))
+                          ->groupBy('date')
+                          ->orderBy('date', 'desc')
+                          ->get()
+                          ->map(function ($item) {
+                              $rows = Expense::select('id', 'title', 'amount')
+                                             ->whereDate('spent_at', $item->date)
+                                             ->get();
+                              return [
+                                  'date'         => date('d-m-Y', strtotime($item->date)),
+                                  'total_amount' => number_format($item->total_amount),
+                                  'rows'         => $rows,
+                              ];
+                          });
+        });
+
+        return response()->json($data);
     }
 
     public function show($id)
@@ -68,6 +95,7 @@ class ExpenseController extends Controller
             $data['created_by'] = auth()->id();
 
             Expense::create($data);
+            Cache::forget('expenses_grouped_by_date');
         } catch (Exception $e) {
             return response()->json([
                 'status'  => 'error',
@@ -88,6 +116,7 @@ class ExpenseController extends Controller
 
         try {
             $expense->update($request->validated());
+            Cache::forget('expenses_grouped_by_date');
         } catch (Exception $e) {
             return response()->json([
                 'status'  => 'error',
@@ -108,6 +137,7 @@ class ExpenseController extends Controller
 
         try {
             Expense::destroy($ids);
+            Cache::forget('expenses_grouped_by_date');
         } catch (Exception $e) {
             return response()->json([
                 'status'  => 'error',
