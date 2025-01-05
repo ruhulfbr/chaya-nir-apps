@@ -25,6 +25,22 @@ async function fetchData() {
     loading.value = false;
 }
 
+function filterData(event){
+    const query = event.target.value.toLowerCase()
+    const elements = document.querySelectorAll('.searchable');
+
+    elements.forEach(element => {
+        const text = element.textContent.toLowerCase();
+        const targetEl = element.closest('.data-item');
+
+        if (text.includes(query)) {
+            targetEl.classList.remove('d-none');
+        } else {
+            targetEl.classList.add('d-none');
+        }
+    });
+}
+
 function openViewExpenseModal(id) {
     expenseStore.view_expense_id = id;
     showViewExpense.value = true;
@@ -45,9 +61,20 @@ onMounted(async () => {
     <div class="dashboard-page">
         <Loader v-if="loading" />
         <div class="dashboard-page-contents mx-2" v-if="loading === false">
+            <div class="page-top-box mb-4">
+                <h3 class="h3">Date wise Expenses</h3>
+                <div class="col-md-3 col-sm-6 my-1">
+                  <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter date.."
+                      @keyup="filterData($event)"
+                  />
+                </div>
+            </div>
             <div class="row flex-wrap">
                 <div
-                    class="col-md-4 col-sm-6 my-1 p-1 min150"
+                    class="col-md-4 col-sm-6 mb-2 min150 data-item"
                     v-for="(group, index) in expense_data"
                    :key="index"
                 >
@@ -55,7 +82,7 @@ onMounted(async () => {
                         <h2 class="accordion-header" :id="`panelsStayOpen-heading${index}`">
                             <button class="accordion-button collapsed d-flex justify-content-between align-items-center" type="button" data-bs-toggle="collapse" :data-bs-target="`#panelsStayOpen-collapse${index}`" aria-expanded="false" :aria-controls="`panelsStayOpen-collapse${index}`">
                                 <div class="d-flex justify-content-between w-100">
-                                    <span class="fw-bold">{{ group.date }}</span>
+                                    <span class="fw-bold searchable">{{ group.date }}</span>
                                     <span class="fw-bold me-1">{{ group.total_amount }}</span>
                                 </div>
                             </button>
