@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DepositController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\MemberController;
+use App\Http\Controllers\Api\NoteController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\LoginController;
@@ -22,12 +23,15 @@ Route::group(['prefix' => 'api'], function () {
     Route::resource('deposits', DepositController::class)->only(['store', 'update', 'destroy'])->middleware('auth');
     Route::resource('category', CategoryController::class)->only(['store', 'update', 'destroy'])->middleware('auth');
     Route::resource('expenses', ExpenseController::class)->only(['store', 'update', 'destroy'])->middleware('auth');
+    Route::resource('notes', NoteController::class)->only(['store', 'update', 'destroy'])->middleware('auth');
 
     // Public resource routes
     Route::resource('members', MemberController::class)->except(['store', 'update', 'destroy']);
     Route::resource('deposits', DepositController::class)->except(['store', 'update', 'destroy']);
     Route::resource('category', CategoryController::class)->except(['store', 'update', 'destroy']);
     Route::resource('expenses', ExpenseController::class)->except(['store', 'update', 'destroy']);
+    Route::resource('notes', NoteController::class)->except(['store', 'update', 'destroy']);
+
     Route::get('expenses-by-date', [ExpenseController::class, 'dateWiseData']);
 
     // Public route

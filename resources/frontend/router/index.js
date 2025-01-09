@@ -10,15 +10,12 @@ const router = createRouter({
             name: "home",
             component: () => import("../views/Admin.vue"),
             children: [
-                // dashboard route
                 {
                     name: "dashboard",
                     path: "",
                     component: () => import("../modules/dashboard/Dashboard.vue"),
                     props: (route) => ({isAuthenticated: route.meta.isAuthenticated}),
                 },
-
-                // Member
                 {
                     name: "members",
                     path: "members",
@@ -32,8 +29,6 @@ const router = createRouter({
                     component: () => import("../modules/deposit/Deposits.vue"),
                     props: (route) => ({isAuthenticated: route.meta.isAuthenticated}),
                 },
-
-                // Expenses Route
                 {
                     name: "expenses",
                     path: "expenses",
@@ -50,6 +45,12 @@ const router = createRouter({
                     name: "expenses_by_date",
                     path: "expenses-by-date",
                     component: () => import("../modules/expense/DateWiseExpenses.vue"),
+                    props: (route) => ({isAuthenticated: route.meta.isAuthenticated}),
+                },
+                {
+                    name: "notes",
+                    path: "notes",
+                    component: () => import("../modules/notes/Notes.vue"),
                     props: (route) => ({isAuthenticated: route.meta.isAuthenticated}),
                 },
                 {

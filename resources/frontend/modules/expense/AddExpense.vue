@@ -145,7 +145,7 @@ onMounted(() => {
                                 class="text-danger"
                                 v-if="expenseStore.add_expense_errors.description"
                             >
-                                {{ expenseStore.add_expense_errors.amount }}
+                                {{ expenseStore.add_expense_errors.description }}
                             </span>
                         </div>
 

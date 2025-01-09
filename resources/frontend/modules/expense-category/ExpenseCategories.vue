@@ -157,7 +157,7 @@ onMounted(async () => {
                 <tbody>
 
                     <tr v-if="expense_categories.length === 0">
-                        <td colspan="3" class="text-center">No data found</td>
+                        <td colspan="4" class="text-center">No data found</td>
                     </tr>
 
                     <tr

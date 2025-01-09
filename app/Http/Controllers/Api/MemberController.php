@@ -15,7 +15,7 @@ class MemberController extends Controller
 {
     public function index(Request $request)
     {
-        $limit       = $request->query('limit') && $request->query('limit') < 100 ? $request->query('limit') : 10;
+        $limit       = $this->getLimit($request);
         $name        = $request->query('name');
         $phoneNumber = $request->query('phone');
 
