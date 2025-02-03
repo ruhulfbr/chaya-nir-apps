@@ -74,6 +74,33 @@ onMounted(async () => {
                                 {{ expenseStore.edit_expense_errors.title }}
                             </span>
                             </div>
+
+                            <div class="form-item">
+                                <label class="my-2">Stair no <span class="text-danger">*</span></label>
+
+                                <select
+                                    class="form-select"
+                                    v-model="expense_data.stair_no"
+                                    :class="{
+                                    'border-danger': expenseStore.edit_expense_errors.stair_no
+                                }"
+                                >
+                                    <option value="">Select Stair</option>
+                                    <option value="7">7th Floor</option>
+                                    <option value="8">8th Floor</option>
+                                    <option value="9">9th Floor</option>
+                                    <option value="10">10th Floor</option>
+                                </select>
+                                <span
+                                    class="text-danger"
+                                    v-if="
+                                    expenseStore.edit_expense_errors.stair_no
+                                "
+                                >
+                                {{ expenseStore.edit_expense_errors.stair_no }}
+                            </span>
+                            </div>
+
                             <div class="form-item">
                                 <label class="my-2">Category <span class="text-danger">*</span></label>
 

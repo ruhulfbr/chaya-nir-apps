@@ -151,6 +151,19 @@ onMounted(async () => {
                     </select>
                 </div>
                 <div class="col-md-3 col-sm-6 my-1">
+                    <select
+                        class="form-select"
+                        v-model="expenseStore.q_stair_no"
+                        @change="fetchData(1)"
+                    >
+                        <option value="">Select Stair</option>
+                        <option value="7">7th Floor</option>
+                        <option value="8" selected>8th Floor</option>
+                        <option value="9">9th Floor</option>
+                        <option value="10">10th Floor</option>
+                    </select>
+                </div>
+                <div class="col-md-3 col-sm-6 my-1">
                     <div class="input-group input-group-sm mb-3">
                         <span class="input-group-text">From</span>
                         <input
@@ -174,23 +187,12 @@ onMounted(async () => {
                 </div>
                 <div class="col-md-3 col-sm-6 my-1">
                     <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text">Min Amount</span>
+                        <span class="input-group-text">Amount</span>
                         <input
                             type="number"
                             class="form-control"
                             @input="fetchData(1)"
-                            v-model="expenseStore.q_start_amount"
-                        />
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 my-1">
-                    <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text">Max Amount</span>
-                        <input
-                            type="number"
-                            class="form-control"
-                            @input="fetchData(1)"
-                            v-model="expenseStore.q_end_amount"
+                            v-model="expenseStore.q_amount"
                         />
                     </div>
                 </div>
@@ -244,7 +246,7 @@ onMounted(async () => {
                         <th class="th-width-15">Category</th>
                         <th class="th-width-10">Amount</th>
                         <th class="th-width-15">Date</th>
-                        <th class="th-width-20">Expense by</th>
+                        <th class="th-width-20">Slip</th>
                         <th class="th-width-15 table-action-col">Action</th>
                     </tr>
 
@@ -267,7 +269,14 @@ onMounted(async () => {
                         <td class="min150 max150">{{ expense.category.name }}</td>
                         <td class="min100 max100">{{ expense.amount }}</td>
                         <td class="min100 max100">{{ expense.spent_at }}</td>
-                        <td class="min100 max100">{{ expense.spent_by_member.name }}</td>
+                        <td class="min100 max100">
+                            <template v-if="expense.receipt">
+                                <a :href="expense.receipt" target="_blank" class="link-primary">Receipt</a>
+                            </template>
+                            <template v-else>
+                                N/A
+                            </template>
+                        </td>
                         <td class="table-action-btns">
                             <ViewSvgIcon
                                 color="#00CFDD"

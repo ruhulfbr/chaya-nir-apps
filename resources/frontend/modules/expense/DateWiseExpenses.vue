@@ -92,7 +92,13 @@ onMounted(async () => {
                                 <table class="table table-striped table-bordered mb-0">
                                     <tbody>
                                         <tr v-for="(row, rowIndex) in group.rows" :key="rowIndex">
-                                            <td>{{ row.title }}</td>
+                                            <td>{{ row.title }}
+                                                <template v-if="row.receipt">
+                                                    <a :href="row.receipt" target="_blank">
+                                                       #
+                                                    </a>
+                                                </template>
+                                            </td>
                                             <td>{{ row.amount }}</td>
                                             <td class="text-center">
                                               <ViewSvgIcon

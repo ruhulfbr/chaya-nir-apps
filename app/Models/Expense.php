@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Expense extends Model
 {
-    protected $fillable = ['category_id', 'title', 'description', 'amount', 'receipt', 'spent_by', 'spent_at', 'created_by'];
+    protected $fillable = ['stair_no', 'category_id', 'title', 'description', 'amount', 'receipt', 'spent_by', 'spent_at', 'created_by'];
 
     public function category(): BelongsTo
     {

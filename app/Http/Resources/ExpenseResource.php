@@ -12,6 +12,7 @@ class ExpenseResource extends JsonResource
         return [
             'id'              => $this->id,
             'category_id'     => $this->category_id,
+            'stair_no'        => $this->stair_no,
             'title'           => $this->title,
             'description'     => $this->description,
             'amount'          => $this->amount,

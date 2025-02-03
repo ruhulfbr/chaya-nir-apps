@@ -9,9 +9,9 @@ export const useExpenseStore = defineStore("expense", {
         limit: 20,
 
         q_title: "",
+        q_stair_no: "8",
         q_category: "",
-        q_start_amount: "",
-        q_end_amount: "",
+        q_amount: "",
         q_start_date: "",
         q_end_date: "",
         q_sort_column: "id",
@@ -28,6 +28,7 @@ export const useExpenseStore = defineStore("expense", {
 
         current_expense_item: {
             id: "",
+            stair_no: "",
             category_id: "",
             title: "",
             amount: "",
@@ -44,6 +45,7 @@ export const useExpenseStore = defineStore("expense", {
         resetCurrentExpenseData() {
             this.current_expense_item = {
                 id: "",
+                stair_no: "",
                 category_id: "",
                 title: "",
                 amount: "",
@@ -60,7 +62,7 @@ export const useExpenseStore = defineStore("expense", {
             return new Promise((resolve, reject) => {
                 axios
                     .get(
-                        `/api/expenses?page=${page}&limit=${limit}&title=${q_title}&category=${this.q_category}&start_amount=${this.q_start_amount}&end_amount=${this.q_end_amount}&start_date=${this.q_start_date}&end_date=${this.q_end_date}&sort_column=${this.q_sort_column}&sort_order=${this.q_sort_order}`
+                        `/api/expenses?page=${page}&limit=${limit}&title=${q_title}&category=${this.q_category}&amount=${this.q_amount}&stair_no=${this.q_stair_no}&start_date=${this.q_start_date}&end_date=${this.q_end_date}&sort_column=${this.q_sort_column}&sort_order=${this.q_sort_order}`
                     )
                     .then((response) => {
                         this.expenses = response.data.data;

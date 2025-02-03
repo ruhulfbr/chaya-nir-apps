@@ -16,6 +16,7 @@ class UpdateExpenseRequest extends FormRequest
     {
         return [
             'title'       => ['required', 'string', 'max:255'],
+            'stair_no'    => ['required', 'string'],
             'category_id' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'amount'      => ['required', 'numeric'],

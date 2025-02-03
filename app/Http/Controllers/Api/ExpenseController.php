@@ -32,6 +32,7 @@ class ExpenseController extends Controller
         $amount     = $request->query('amount');
         $spent_by   = $request->query('spent_by');
         $category   = $request->query('category');
+        $stairNo    = $request->query('stair_no');
 
         $expenses = Expense::query();
 
@@ -53,6 +54,9 @@ class ExpenseController extends Controller
         $expenses->when($category, function ($query, $category) {
             $query->where('category_id', $category);
         });
+        $expenses->when($stairNo, function ($query, $stairNo) {
+            $query->where('stair_no', $stairNo);
+        });
 
         $expenses = $expenses->orderBy($sort_column, $sort_order)->with(['spentBy', 'category'])->paginate($limit);
 
@@ -67,7 +71,7 @@ class ExpenseController extends Controller
                           ->orderBy('date', 'desc')
                           ->get()
                           ->map(function ($item) {
-                              $rows = Expense::select('id', 'title', 'amount')
+                              $rows = Expense::select('id', 'title', 'amount', 'receipt')
                                              ->whereDate('spent_at', $item->date)
                                              ->get();
                               return [
