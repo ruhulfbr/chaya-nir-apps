@@ -6,26 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Models\Deposit;
 use App\Models\Expense;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function getDashBoardReports()
+    public function getDashBoardReports(Request $request)
     {
         $totalDeposits = Deposit::sum('amount');
-        $totalExpenses = Expense::sum('amount');
+        $totalExpenses = Expense::when($request->stair_no, function ($query) use ($request) {
+           $query->where('stair_no', $request->stair_no);
+        })->sum('amount');
         $balance       = $totalDeposits - $totalExpenses;
-
-        $todayDeposits = Deposit::whereDate('deposit_at', '=', Carbon::now())->sum('amount');
-        $todayExpenses = Expense::whereDate('spent_at', '=', Carbon::now())->sum('amount');
 
         return response()->json([
             'total_deposits'    => number_format($totalDeposits),
             'total_expenses'    => number_format($totalExpenses),
             'balance'           => number_format($balance),
-            'today_deposits'    => number_format($todayDeposits),
-            'today_expenses'    => number_format($todayExpenses),
             'member_deposits'   => $this->getMembersDeposits(),
-            'category_expenses' => $this->getCategoryExpenses(),
+            'category_expenses' => $this->getCategoryExpenses($request),
         ]);
     }
 
@@ -47,9 +45,12 @@ class ReportController extends Controller
         return $data->toArray();
     }
 
-    private function getCategoryExpenses()
+    private function getCategoryExpenses(Request $request)
     {
         $expenses = Expense::selectRaw('category_id, SUM(amount) as total_amount')
+                           ->when($request->stair_no, function ($query) use ($request) {
+                               $query->where('stair_no', $request->stair_no);
+                           })
                            ->with('category') // Load the related member
                            ->groupBy('category_id')
                            ->get();
